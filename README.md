@@ -1,5 +1,5 @@
-ecommerce-backend-clean-architecture
-🛍️ A simple and scalable E-commerce backend system built with Node.js, TypeScript, MongoDB, and Express, following Clean Architecture principles.
+# ecommerce-backend-clean-architecture
+🎯 A simple and scalable E-commerce backend system built with Node.js, TypeScript, MongoDB, and Express, following Clean Architecture principles.
 
 ✅ Features
 
