@@ -1,17 +1,60 @@
-📦 Project Overview
-This is a simple E-commerce backend system built with Node.js, TypeScript, MongoDB, and Clean Architecture.
-It includes core features like:
+🛒 E-Commerce Backend API (Training Project)
+A backend system for an E-commerce platform, built using Node.js, TypeScript, MongoDB, and designed with Clean Architecture principles.
 
-User authentication (signup, login, logout, email verification, password reset)
+This is my second training project as I continue improving my backend development skills. The project is structured for scalability, role-based access, and maintainability, following real-world patterns used in professional systems.
 
-Role management: super admin, admin, and customer
+🚀 Features
+Authentication & Authorization
 
-Category & product management
+Signup, Login, Logout
 
-Admins can create and manage products and categories
+Email verification (OTP)
 
-Only the creator (admin) can update or delete their products
+Forgot & Change Password
 
-Super Admin has full access to everything
+JWT-based Auth
 
-This is my second training project, built from scratch to improve my backend development skills and code organization following professional standards.
+Roles: superAdmin, admin, customer
+
+Role System
+
+superAdmin: Full control over the system
+
+admin: Can create, update, and delete their own products/categories
+
+customer: Can view products and categories
+
+Category Management
+
+Create, update, delete, and retrieve categories
+
+Only authorized roles can perform certain actions
+
+Product Management
+
+Admins can add/update/delete only their own products
+
+Anyone can view products by category or ID
+
+Secure Routes with middlewares and validations for each operation
+
+🧪 API Testing
+You can try out the API using the Postman collection below:
+📩 Download Postman Collection (https://drive.google.com/file/d/1JNkTssjmVN8ZnWf0rRUmUn9c5Vkzb0kP/view?usp=drive_link)
+
+📂 Tech Stack
+Node.js + Express.js
+
+TypeScript
+
+MongoDB + Mongoose
+
+JWT (authentication)
+
+Clean Architecture
+
+UUID for unique IDs
+
+📌 Notes
+This project is not yet complete. I am building it step by step and pushing updates regularly as I explore deeper backend concepts.
+Feedback is always welcome!
