@@ -18,7 +18,6 @@ export class CategoryController {
 
     async getAllCategory(_req: Request, res: Response): Promise<void> {
         try {
-
             const category = await this.categoryService.getAllCategory();
             ResponseHandling.handleResponse({
                 res: res, statusCode: 200,
@@ -36,7 +35,7 @@ export class CategoryController {
         try {
             const category: ICategory = req.body;
             const token = req.header('Authorization')?.replace('Bearer ', '');
-            const createdcategory = await this.categoryService.createCategory(category,token!);
+            const createdcategory = await this.categoryService.createCategory(category, token!);
             ResponseHandling.handleResponse({
                 res: res, statusCode: 200,
                 message: "Created Successfully",
@@ -53,7 +52,6 @@ export class CategoryController {
     async deleteCategory(req: Request, res: Response): Promise<void> {
         try {
             const { categoryId } = req.body;
-            if (!categoryId) throw new Error("The category not updated");
             await this.categoryService.deleteCategory(categoryId);
             ResponseHandling.handleResponse({
                 res: res, statusCode: 200,
@@ -69,7 +67,6 @@ export class CategoryController {
     async updateCategory(req: Request, res: Response): Promise<void> {
         try {
             const { category, categoryId } = req.body;
-            if (!category || !categoryId) throw new Error("The category not updated");
             const updatedCategory = await this.categoryService.updateCategory(category, categoryId);
             ResponseHandling.handleResponse({
                 res: res, statusCode: 200,
@@ -88,7 +85,6 @@ export class CategoryController {
     async getSingleCategory(req: Request, res: Response): Promise<void> {
         try {
             const { categoryId } = req.params;
-            if (!categoryId) throw new Error("Category not found");
             const category = await this.categoryService.getSingleCategory(categoryId);
             ResponseHandling.handleResponse({
                 res: res, statusCode: 200,

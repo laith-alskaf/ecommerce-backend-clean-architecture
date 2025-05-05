@@ -1,7 +1,6 @@
+import { ICategory } from "../../../interfaces/category";
+import { CategoryModel } from "../models/category.model";
 
-import { CategoryModel } from "../database/mongodb/models/category.model";
-import { ICategory } from "../interfaces/category";
-import { IProduct } from "../interfaces/product";
 export class CategoryRepository {
 
 
@@ -13,8 +12,8 @@ export class CategoryRepository {
         return await CategoryModel.create(category);
     }
 
-    async deleteCategory(categoryId: string): Promise<ICategory | null> {
-        return await CategoryModel.findOneAndDelete({ id: categoryId });
+    async deleteCategory(categoryId: string): Promise<any> {
+        return await CategoryModel.deleteOne({ id: categoryId });
     }
 
     async updateCategory(category: ICategory, categoryId: string): Promise<ICategory | null> {

@@ -1,5 +1,5 @@
+import { CategoryRepository } from '../database/mongodb/repositories/category.repository';
 import { ICategory } from '../interfaces/category';
-import { CategoryRepository } from '../repositories/category.repository';
 import jwt from 'jsonwebtoken';
 export class CategoryService {
     private categoryRepository: CategoryRepository;
@@ -10,7 +10,7 @@ export class CategoryService {
 
     async getAllCategory(): Promise<ICategory[] | null> {
         const categories = await this.categoryRepository.getAllCategory();
-        if (!categories) throw new Error("Please, try again after 1m");
+        if (!categories) throw new Error("There are no categoies");
         return categories;
     }
 
@@ -24,13 +24,15 @@ export class CategoryService {
 
     async deleteCategory(categoryId: string): Promise<ICategory> {
         const deletedCategory = await this.categoryRepository.deleteCategory(categoryId);
-        if (!deletedCategory) throw new Error("Category not found");
+        if (deletedCategory.deletedCount < 1) throw new Error("Category not found or already deleted");
         return deletedCategory;
     }
 
     async updateCategory(category: ICategory, categoryId: string): Promise<ICategory> {
         const updatedCategory = await this.categoryRepository.updateCategory(category, categoryId);
         if (!updatedCategory) throw new Error("Category not found");
+        updatedCategory.updatedAt = new Date();
+        updatedCategory.save();
         return updatedCategory;
     }
 

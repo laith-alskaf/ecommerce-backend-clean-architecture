@@ -1,5 +1,5 @@
+import { ProductRepository } from '../database/mongodb/repositories/product.repository';
 import { IProduct } from '../interfaces/product';
-import { ProductRepository } from '../repositories/product.repository';
 import jwt from 'jsonwebtoken';
 export class ProductService {
     private productRepository: ProductRepository;
@@ -13,12 +13,12 @@ export class ProductService {
         product.createdBy = decoded.id;
         const createdProduct = await this.productRepository.createProduct(product);
         if (!createdProduct) throw new Error("Please, try again after 1m");
-        createdProduct!.save();
         return createdProduct;
     }
     async updateProduct(productId: string, product: IProduct): Promise<IProduct> {
         const updatedProduct = await this.productRepository.updateProduct(productId, product);
         if (!updatedProduct) throw new Error("Please, try again after 1m");
+        updatedProduct.updatedAt = new Date();
         updatedProduct.save();
         return updatedProduct;
     }
@@ -29,10 +29,11 @@ export class ProductService {
         return deletedProduct;
     }
 
-    async getAllProducts(): Promise<IProduct[]> {
-        const products = await this.productRepository.getAllProducts();
-        if (!products) throw new Error("Not found any product");
-        return products;
+    async getAllProducts(page: number, limit: number): Promise<{ products: IProduct[], total: number }> {
+        const result = await this.productRepository.getAllProducts(page, limit, {});
+        if (!result) throw new Error("No products found.");
+        const { products, total } = result;
+        return { products, total };
     }
 
     async getSingleProduct(id: string): Promise<IProduct> {
@@ -44,6 +45,18 @@ export class ProductService {
         const products = await this.productRepository.getProductsByCategoryId(id);
         if (!products) throw new Error("Product not found");
         return products;
+    }
+
+    async searchProducts(page: number, limit: number, title: string, categoryId?: string): Promise<{ products: IProduct[], total: number }> {
+        const filter: any = {};
+        filter.title = { $regex: title, $options: 'i' };
+        if (categoryId) {
+            filter.categoryId = categoryId;
+        }
+        const result = await this.productRepository.getAllProducts(page, limit, filter);
+        if (!result) throw new Error("Product not found");
+        const { products, total } = result;
+        return { products, total };
     }
 
 }

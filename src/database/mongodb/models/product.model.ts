@@ -41,7 +41,7 @@ const productSchema = new Schema<IProduct>({
     createdBy: { type: String, required: true },
 }, {
     timestamps: true,
-    
+
     toJSON: {
         transform: (_, ret) => {
             delete ret._id;
@@ -50,5 +50,12 @@ const productSchema = new Schema<IProduct>({
     }
 });
 
+productSchema.index({ title: 'text' });
+
+productSchema.index({ title: 'text', categoryId: 1 });
+
+productSchema.index({ createdAt: -1 });
+
+productSchema.index({ categoryId: 1 });
 
 export const ProductModel = model<IProduct>('Products', productSchema);

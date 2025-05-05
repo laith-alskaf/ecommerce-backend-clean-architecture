@@ -15,16 +15,23 @@ export class ProductController {
         this.updateProduct = this.updateProduct.bind(this);
         this.getSingleProduct = this.getSingleProduct.bind(this);
         this.getProductsByCategoryId = this.getProductsByCategoryId.bind(this);
+        this.searchProducts = this.searchProducts.bind(this);
     }
 
-    async getAllProducts(_req: Request, res: Response): Promise<void> {
+    async getAllProducts(req: Request, res: Response): Promise<void> {
         try {
-
-            const products = await this.productService.getAllProducts();
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 5;
+            const { products, total } = await this.productService.getAllProducts(page, limit);
             ResponseHandling.handleResponse({
                 res: res, statusCode: 200,
-                message: "This is all products",
-                body: { products: products }
+                message: "Fetched products with pagination",
+                body: {
+                    currentPage: page,
+                    totalPages: Math.ceil(total / limit),
+                    totalItems: total,
+                    products: products,
+                }
             });
 
         } catch (error: any) {
@@ -125,6 +132,28 @@ export class ProductController {
         }
     }
 
+
+    async searchProducts(req: Request, res: Response): Promise<void> {
+        try {
+            const { title = '', categoryId = '', page = 1, limit = 10 } = req.query;
+            const pageNumber = parseInt(page as string);
+            const limitNumber = parseInt(limit as string);
+            const productTitle = title as string;
+            const category_Id = categoryId as string;
+            const prodcuts = await this.productService.searchProducts(pageNumber, limitNumber, productTitle, category_Id);
+            ResponseHandling.handleResponse({
+                res: res, statusCode: 200,
+                message: "This is the product",
+                body: {
+                    product: prodcuts
+                }
+            });
+
+        } catch (error: any) {
+            console.log("Error in searchProducts", error);
+            ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+        }
+    }
 
 
 

@@ -5,9 +5,7 @@ import { UserModel } from '../models/user.model';
 export class UserRepository {
 
   async createUser(user: IUser): Promise<IUser> {
- 
-    const newUser = new UserModel(user);
-    return await newUser.save();
+    return await UserModel.create(user);
   }
 
   async getUserByEmail(email: string): Promise<IUser | null> {

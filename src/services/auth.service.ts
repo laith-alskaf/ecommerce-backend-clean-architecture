@@ -17,7 +17,7 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     userData.password = hashedPassword;
     const user = await this.userRepository.createUser(userData);
-
+    if (!user) { throw new Error("Please, try again after 1m"); }
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
     user.otpCode = otpCode;
     user.otpCodeExpires = new Date(Date.now() + 10 * 60 * 1000);
@@ -50,7 +50,7 @@ export class AuthService {
   async forgotPassword(email: string): Promise<IUser | null> {
     const user = await this.userRepository.getUserByEmail(email);
     if (!user) {
-      return null;
+      throw new Error("User not found");
     }
     try {
       const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -69,7 +69,7 @@ export class AuthService {
 
   async verifiyEmail(code: string): Promise<IUser> {
     const user = await this.userRepository.getUserByCode(code);
-    if (!user) throw new Error("Invalid code");
+    if (!user) throw new Error("Invalid or expired verification code");
 
     if (user.otpCode !== code || user.otpCodeExpires < new Date()) {
       throw new Error("Expired verification code");

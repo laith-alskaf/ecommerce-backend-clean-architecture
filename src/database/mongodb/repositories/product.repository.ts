@@ -1,11 +1,16 @@
+import { IProduct } from "../../../interfaces/product";
+import { ProductModel } from "../models/product.model";
 
-import { ProductModel } from "../database/mongodb/models/product.model";
-import { IProduct } from "../interfaces/product";
 export class ProductRepository {
 
+    async getAllProducts(page: number, limit: number, filter: {}): Promise<{ products: IProduct[], total: number } | null> {
+        const products = await ProductModel.find(filter)
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(limit);
+        const total = await ProductModel.countDocuments();
+        return { products, total };
 
-    async getAllProducts(): Promise<IProduct[] | null> {
-        return await ProductModel.find({});
     }
     async getSingleProductById(id: string): Promise<IProduct | null> {
         return await ProductModel.findOne({ id });
@@ -24,5 +29,8 @@ export class ProductRepository {
     async getProductsByCategoryId(categoryId: string): Promise<IProduct[] | null> {
         return await ProductModel.find({ categoryId: categoryId });
     }
+
+
+
 
 }
