@@ -1,12 +1,10 @@
 import dotenv from 'dotenv'
-// import cors from 'cors';
 import connectDB from "./database/mongodb/connection";
 import express from 'express';
 import authRoutes from './routes/auth.route'
-// import cookieParser from 'cookie-parser';
 import productRouters from './routes/product.route';
 import categoryRouters from './routes/category.route';
-
+import WishlistRouters from './routes/wishlist.route';
 dotenv.config();
 
 const app = express();
@@ -18,6 +16,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/product", productRouters);
 app.use("/api/category",categoryRouters);
+app.use("/api/wishlist",WishlistRouters);
 
 
 const PORT = process.env.PORT || 5000;

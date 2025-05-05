@@ -2,22 +2,22 @@ import express from 'express';
 import { AuthController } from '../controllers/auth.controller';
 import { validateSignup, validateLogin, validateForgotPass, validateVerifyEmail, validateChangePassword } from '../validators/user.validators';
 
-const router = express.Router();
+const UserRouters = express.Router();
 const authController = new AuthController();
 
-router.post("/signup", validateSignup, authController.signup);
+UserRouters.post("/signup", validateSignup, authController.signup);
 
-router.post("/login", validateLogin, authController.login);
+UserRouters.post("/login", validateLogin, authController.login);
 
-router.post("/forgot-password", validateForgotPass, authController.forgotPassword);
+UserRouters.post("/forgot-password", validateForgotPass, authController.forgotPassword);
 
-router.post("/change-password", validateChangePassword, authController.changePassword);
+UserRouters.post("/change-password", validateChangePassword, authController.changePassword);
 
-router.post("/verifiy-email", validateVerifyEmail, authController.verifiyEmail);
+UserRouters.post("/verifiy-email", validateVerifyEmail, authController.verifiyEmail);
 
-router.post("/logout", authController.logout);
-
-
+UserRouters.post("/logout", authController.logout);
 
 
-export default router;
+
+
+export default UserRouters;

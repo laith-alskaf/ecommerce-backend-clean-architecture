@@ -22,7 +22,7 @@ const userSchema = new Schema<IUser>({
     role: {
         type: String,
         required: true,
-        enum: ['customer', 'admin','superAdmin'],
+        enum: ['customer', 'admin', 'superAdmin'],
         default: 'customer',
     },
     lastLogin: {

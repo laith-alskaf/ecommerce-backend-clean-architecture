@@ -11,8 +11,9 @@ ProductRouters.post("/create", validateProduct, isAdmin, productController.creat
 ProductRouters.post("/delete", validateProductId, checkAdminForDUProduct, productController.deleteProduct);
 ProductRouters.post("/update", validateUpdateProduct, checkAdminForDUProduct, productController.updateProduct);
 ProductRouters.get("/search", validateSearchProduct, productController.searchProducts);
-ProductRouters.get("/:productId", productController.getSingleProduct);
 ProductRouters.get("/byCategoryId/:categoryId", productController.getProductsByCategoryId);
+ProductRouters.get("/:productId", productController.getSingleProduct);
+
 
 
 

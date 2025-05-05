@@ -24,7 +24,6 @@ export class AuthController {
         message: "The account has been created successfully",
       });
     } catch (error: any) {
-      console.log("Error in signup", error);
       ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
     }
   }
@@ -65,7 +64,6 @@ export class AuthController {
         }
       });
     } catch (error: any) {
-      console.log("Error in Verifiy Email");
       ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
     }
   }
@@ -77,7 +75,6 @@ export class AuthController {
       await this.authService.changePassword(newPassword, code);
       ResponseHandling.handleResponse({ res: res, statusCode: 200, message: "Password chnaged successful" });
     } catch (error: any) {
-      console.log("Error in change password");
       ResponseHandling.handleResponse({ res: res, statusCode: 500, message: error.message });
     }
   }

@@ -26,7 +26,6 @@ export class CategoryController {
             });
 
         } catch (error: any) {
-            console.log("Error in getAllCategory", error);
             ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
         }
     }
@@ -43,7 +42,6 @@ export class CategoryController {
             });
 
         } catch (error: any) {
-            console.log("Error in createCategory", error);
             ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
         }
     }
@@ -59,7 +57,6 @@ export class CategoryController {
             });
 
         } catch (error: any) {
-            console.log("Error in deleteCategory", error);
             ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
         }
     }
@@ -77,7 +74,6 @@ export class CategoryController {
             });
 
         } catch (error: any) {
-            console.log("Error in updateCategory", error);
             ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
         }
     }
@@ -95,7 +91,6 @@ export class CategoryController {
             });
 
         } catch (error: any) {
-            console.log("Error in getSingleCategory", error);
             ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
         }
     }

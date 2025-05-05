@@ -35,7 +35,6 @@ export class ProductController {
             });
 
         } catch (error: any) {
-            console.log("Error in getAllProducts", error);
             ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
         }
     }
@@ -52,7 +51,6 @@ export class ProductController {
             });
 
         } catch (error: any) {
-            console.log("Error in createProduct", error);
             ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
         }
     }
@@ -69,7 +67,6 @@ export class ProductController {
             });
 
         } catch (error: any) {
-            console.log("Error in createProduct", error);
             ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
         }
     }
@@ -89,7 +86,6 @@ export class ProductController {
             });
 
         } catch (error: any) {
-            console.log("Error in updateProduct", error);
             ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
         }
     }
@@ -108,7 +104,6 @@ export class ProductController {
             });
 
         } catch (error: any) {
-            console.log("Error in getSingleProduct", error);
             ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
         }
     }
@@ -127,7 +122,6 @@ export class ProductController {
             });
 
         } catch (error: any) {
-            console.log("Error in getSingleProduct", error);
             ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
         }
     }
@@ -150,7 +144,6 @@ export class ProductController {
             });
 
         } catch (error: any) {
-            console.log("Error in searchProducts", error);
             ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
         }
     }
