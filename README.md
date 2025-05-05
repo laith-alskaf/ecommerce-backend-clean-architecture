@@ -3,19 +3,15 @@
 
 ✅ Features
 
-User authentication with JWT (signup, login, logout)
-
-Role-based access: superAdmin, admin, customer
-
-Email verification and password reset
-
-Product management (create, update, delete, get)
-
-Category management
-
-Ownership rules: Admins can only modify their own products/categories
-
-Full input validation with middlewares
+- User authentication with JWT (signup, login, logout)
+- Role-based access: superAdmin, admin, customer
+- SuperAdmin has full access to all data and actions
+- Admins can only manage (create, update, delete) their own products and categories
+- Email verification and password reset
+- Product management (create, update, delete, get)
+- 🔍 Product search with optional category filter and pagination
+- Category management
+- Full input validation with middlewares
 
 Clean code and scalable folder structure
 
