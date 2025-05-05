@@ -1,23 +1,28 @@
-# ecommerce-backend-clean-architecture
-🎯 A simple and scalable E-commerce backend system built with Node.js, TypeScript, MongoDB, and Express, following Clean Architecture principles.
-
-✅ Features
-
-- User authentication with JWT (signup, login, logout)
-- Role-based access: superAdmin, admin, customer
-- SuperAdmin has full access to all data and actions
-- Admins can only manage (create, update, delete) their own products and categories
-- Email verification and password reset
-- Product management (create, update, delete, get)
-- 🔍 Product search with optional category filter and pagination
-- Category management
-- Full input validation with middlewares
-
-Clean code and scalable folder structure
-
-📁 Architecture
-The project is structured using Clean Architecture, separating concerns across routes, controllers, use-cases, interfaces, models, and middlewares.
-This makes the code easy to scale, test, and maintain — similar to real-world enterprise apps.
+🛍️ E-commerce Backend with Wishlist - Clean Architecture
+A scalable and maintainable e-commerce backend system built with Node.js , TypeScript , MongoDB , and Express , following Clean Architecture principles . Includes full authentication, role-based access control, and a Wishlist management system .
+_____________________________________________________________________________________________________________
+✨ Features
+🔐 User Authentication
+JWT-based signup/login/logout
+Email verification & password reset
+👥 Role-Based Access Control
+SuperAdmin: Full system access
+Admin: Manage own products/categories
+Customer: Shop products
+🛒 Product Management
+Create, update, delete, and search products
+Category filtering + pagination
+📁 Category Management
+🧪 Validation & Security
+Middleware-based input validation
+UUID for secure resource IDs
+📋 Wishlist System
+GET /wishlist - View user wishlist
+POST /wishlist/add-product - Add product with validation
+POST /wishlist/remove-product - Remove product
+POST /wishlist/delete - Clear wishlist
+All operations require JWT authentication
+_____________________________________________________________________________________________________________
 
 🧪 Technologies Used
 
@@ -34,26 +39,52 @@ JWT for authentication
 UUID for ID generation
 
 Express middlewares for validation & authorization
+_____________________________________________________________________________________________________________
 
-Postman for API testing
+🚀 Quick Start
 
-📦 How to Use
+ 1-Clone the repo:
+   git clone https://github.com/laith-alskaf/ecommerce-backend-clean-architecture.git
 
-Clone the repo
+ 2-Create .env file from .env.example
 
-Create a .env file based on .env.example
+ 3-Install dependencies:
+   npm install
 
-Run npm install
+ 4-Start development server:
+   npm run dev
+_____________________________________________________________________________________________________________
 
-Start development server with npm run dev
+📦 API Testing
+📥 Download Postman Collection :
+Postman Collection Link
+         (https://drive.google.com/file/d/1JNkTssjmVN8ZnWf0rRUmUn9c5Vkzb0kP/view?usp=drive_link)
 
-🧪 Postman Collection
-You can test all the APIs using the Postman collection.
-👉 Download the Postman Collection
-   (https://drive.google.com/file/d/1JNkTssjmVN8ZnWf0rRUmUn9c5Vkzb0kP/view?usp=drive_link)
+Includes:
 
-🛠️ Project Status
+ -Auth flows (signup, login, verify email)
+ -Product CRUD operations
+ -Wishlist operations
+ -Role-based access tests
+_____________________________________________________________________________________________________________
 
-This is my second training backend project. I'm building it step by step at home to improve my skills and publish real projects on GitHub. The system is still evolving, and I push updates regularly.
+📌 Project Status
+This is my second training backend project . I'm actively improving it at home to practice real-world backend development. Updates are pushed regularly as I learn new patterns and best practices.
+_____________________________________________________________________________________________________________
 
-🤝 Contributions and feedback are welcome!
+💬 Contributions & Feedback
+Contributions are welcome!
+Feel free to:
+
+ -Open issues for bugs or suggestions
+ -Submit pull requests for improvements
+ -Share your feedback on architecture decisions
+ _____________________________________________________________________________________________________________
+
+🎯 Why This Project?
+-✅ Great example of Clean Architecture in practice
+-🎓 Perfect for developers learning:
+      -TypeScript in backend projects
+      -Authentication systems
+      -Role-based access control
+      -RESTful API design
