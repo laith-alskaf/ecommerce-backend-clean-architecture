@@ -15,8 +15,6 @@ UserRouters.post("/change-password", validateChangePassword, authController.chan
 
 UserRouters.post("/verify-email", validateVerifyEmail, authController.verifiyEmail);
 
-UserRouters.post("/sendCode", validateForgotPass, authController.sendCodeToVerify);
-
 UserRouters.post("/logout", authController.logout);
 
 

@@ -24,7 +24,7 @@ const verifyEmailSchema = Joi.object({
   code: Joi.string().required(),
 });
 const changePasswordSchema = Joi.object({
-  code: Joi.string().required(),
+  email: Joi.string().email().required(),
   newPassword: Joi.string().required()
 });
 

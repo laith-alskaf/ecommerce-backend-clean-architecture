@@ -13,7 +13,6 @@ export class AuthController {
     this.forgotPassword = this.forgotPassword.bind(this);
     this.verifiyEmail = this.verifiyEmail.bind(this);
     this.changePassword = this.changePassword.bind(this);
-    this.sendCodeToVerify = this.sendCodeToVerify.bind(this);
   }
 
   async signup(req: Request, res: Response): Promise<void> {
@@ -69,23 +68,11 @@ export class AuthController {
     }
   }
 
-  async sendCodeToVerify(req: Request, res: Response) {
-    try {
-      const { email } = req.body;
-       await this.authService.sendCode(email);
-      ResponseHandling.handleResponse({
-        res: res, message: "Code sent to email successfully", statusCode: 200,
-      });
-    } catch (error: any) {
-      ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
-    }
-  }
-
 
   async changePassword(req: Request, res: Response) {
     try {
-      const { newPassword, code } = req.body;
-      await this.authService.changePassword(newPassword, code);
+      const { newPassword, email } = req.body;
+      await this.authService.changePassword(newPassword, email);
       ResponseHandling.handleResponse({ res: res, statusCode: 200, message: "Password chnaged successful" });
     } catch (error: any) {
       ResponseHandling.handleResponse({ res: res, statusCode: 500, message: error.message });

@@ -85,21 +85,8 @@ export class AuthService {
 
   }
 
-  async sendCode(email: string): Promise<IUser> {
+  async changePassword(password: string, email: string): Promise<IUser> {
     const user = await this.userRepository.getUserByEmail(email);
-    if (!user) throw new Error("Email not found");
-    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-    user.otpCode = otpCode;
-    user.otpCodeExpires = new Date(Date.now() + 10 * 60 * 1000);
-    user.save();
-    await sendVerificationEmail(user.email, otpCode);
-    return user;
-
-  }
-
-
-  async changePassword(password: string, code: string): Promise<IUser> {
-    const user = await this.userRepository.getUserByCode(code);
     if (!user) {
       throw new Error('User not found');
     }
