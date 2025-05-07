@@ -13,7 +13,9 @@ UserRouters.post("/forgot-password", validateForgotPass, authController.forgotPa
 
 UserRouters.post("/change-password", validateChangePassword, authController.changePassword);
 
-UserRouters.post("/verifiy-email", validateVerifyEmail, authController.verifiyEmail);
+UserRouters.post("/verify-email", validateVerifyEmail, authController.verifiyEmail);
+
+UserRouters.post("/sendCode", validateForgotPass, authController.sendCodeToVerify);
 
 UserRouters.post("/logout", authController.logout);
 

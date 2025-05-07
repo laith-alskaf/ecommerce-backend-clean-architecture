@@ -13,6 +13,7 @@ export class AuthController {
     this.forgotPassword = this.forgotPassword.bind(this);
     this.verifiyEmail = this.verifiyEmail.bind(this);
     this.changePassword = this.changePassword.bind(this);
+    this.sendCodeToVerify = this.sendCodeToVerify.bind(this);
   }
 
   async signup(req: Request, res: Response): Promise<void> {
@@ -60,8 +61,20 @@ export class AuthController {
       ResponseHandling.handleResponse({
         res: res, message: "Email verifiy successfully", statusCode: 200,
         body: {
-          userInfo: { "_id": user.id, "name": user.userName, "email": user.email }
+          userInfo: { "id": user.id, "name": user.userName, "email": user.email }
         }
+      });
+    } catch (error: any) {
+      ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+    }
+  }
+
+  async sendCodeToVerify(req: Request, res: Response) {
+    try {
+      const { email } = req.body;
+       await this.authService.verifiyEmail(email);
+      ResponseHandling.handleResponse({
+        res: res, message: "Code sent to email successfully", statusCode: 200,
       });
     } catch (error: any) {
       ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
