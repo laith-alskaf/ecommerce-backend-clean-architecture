@@ -72,7 +72,7 @@ export class AuthController {
   async sendCodeToVerify(req: Request, res: Response) {
     try {
       const { email } = req.body;
-       await this.authService.verifiyEmail(email);
+       await this.authService.sendCode(email);
       ResponseHandling.handleResponse({
         res: res, message: "Code sent to email successfully", statusCode: 200,
       });
