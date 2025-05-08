@@ -3,6 +3,7 @@ import { IUser } from '../interfaces/user';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { sendVerificationEmail, sendResetSuccessEmail, sendWelcomeEmail } from '../utils/email/emails';
+import { string } from 'joi';
 
 export class AuthService {
   private userRepository: UserRepository;
@@ -27,7 +28,7 @@ export class AuthService {
     return user;
   }
 
-  async login(email: string, password: string): Promise<string> {
+  async login(email: string, password: string): Promise<{ token: string, user: IUser }> {
     const user = await this.userRepository.getUserByEmail(email);
     if (!user?.isEmailVerified) {
       throw new Error('You should verifiy email before login');
@@ -44,7 +45,7 @@ export class AuthService {
     });
     user.lastLogin = new Date();
 
-    return token;
+    return { token,user};
   }
 
   async forgotPassword(email: string): Promise<IUser | null> {

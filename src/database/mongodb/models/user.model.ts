@@ -41,6 +41,11 @@ userSchema.set('toJSON', {
     transform: (_, ret) => {
         delete ret._id;
         delete ret.__v;
+        delete ret.otpCode;
+        delete ret.isEmailVerified;
+        delete ret.otpCodeExpires;
+        delete ret.lastLogin;
+        delete ret.password;
     }
 });
 export const UserModel = model<IUser>('Users', userSchema);
