@@ -33,7 +33,14 @@ export class AuthController {
     try {
       const { email, password } = req.body;
       const {token,user} = await this.authService.login(email, password);
-      ResponseHandling.handleResponse({ res: res, statusCode: 200, body: { token: token,userInfo:user } });
+      ResponseHandling.handleResponse({ res: res, statusCode: 200, body: {
+         token: token,
+         userInfo:{
+           "id":user.id,
+           "userName":user.userName,
+           "email":user.email,
+           "role":user.role
+          } } });
     } catch (error: any) {
       ResponseHandling.handleResponse({ res: res, statusCode: 401, message: error.message });
     }
