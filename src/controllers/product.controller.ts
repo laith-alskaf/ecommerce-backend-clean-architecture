@@ -148,6 +148,27 @@ export class ProductController {
         }
     }
 
+    async getAllProductsMine(req: Request, res: Response): Promise<void> {
+        try {
+             const userId=req.user.id;
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 5;
+            const { products, total } = await this.productService.productsMine(page, limit,userId);
+            ResponseHandling.handleResponse({
+                res: res, statusCode: 200,
+                message: "Fetched products with pagination",
+                body: {
+                    currentPage: page,
+                    totalPages: Math.ceil(total / limit),
+                    totalItems: total,
+                    products: products,
+                }
+            });
+
+        } catch (error: any) {
+            ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+        }
+    }
 
 
 }

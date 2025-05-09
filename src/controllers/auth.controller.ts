@@ -32,15 +32,18 @@ export class AuthController {
   async login(req: Request, res: Response): Promise<void> {
     try {
       const { email, password } = req.body;
-      const {token,user} = await this.authService.login(email, password);
-      ResponseHandling.handleResponse({ res: res, statusCode: 200, body: {
-         token: token,
-         userInfo:{
-           "id":user.id,
-           "userName":user.userName,
-           "email":user.email,
-           "role":user.role
-          } } });
+      const { token, user } = await this.authService.login(email, password);
+      ResponseHandling.handleResponse({
+        res: res, statusCode: 200, body: {
+          token: token,
+          userInfo: {
+            "id": user.id,
+            "userName": user.userName,
+            "email": user.email,
+            "role": user.role
+          }
+        }
+      });
     } catch (error: any) {
       ResponseHandling.handleResponse({ res: res, statusCode: 401, message: error.message });
     }
@@ -63,12 +66,9 @@ export class AuthController {
   async verifiyEmail(req: Request, res: Response) {
     try {
       const { code } = req.body;
-      const user = await this.authService.verifiyEmail(code);
+      await this.authService.verifiyEmail(code);
       ResponseHandling.handleResponse({
-        res: res, message: "Email verifiy successfully", statusCode: 200,
-        body: {
-          userInfo: { "id": user.id, "name": user.userName, "email": user.email }
-        }
+        res: res, message: "Email verifiy successfully", statusCode: 200
       });
     } catch (error: any) {
       ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });

@@ -59,4 +59,11 @@ export class ProductService {
         return { products, total };
     }
 
+    async productsMine(page: number, limit: number,userId:string): Promise<{ products: IProduct[], total: number }> {
+        const result = await this.productRepository.getAllProducts(page, limit, {createdBy:userId});
+        if (!result) throw new Error("No products found.");
+        const { products, total } = result;
+        return { products, total };
+    }
+
 }

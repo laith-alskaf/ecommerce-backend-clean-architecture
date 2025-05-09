@@ -45,7 +45,7 @@ export class AuthService {
     });
     user.lastLogin = new Date();
 
-    return { token,user};
+    return { token, user };
   }
 
   async forgotPassword(email: string): Promise<IUser | null> {
@@ -68,7 +68,7 @@ export class AuthService {
 
   }
 
-  async verifiyEmail(code: string): Promise<IUser> {
+  async verifiyEmail(code: string): Promise<void> {
     const user = await this.userRepository.getUserByCode(code);
     if (!user) throw new Error("Invalid or expired verification code");
 
@@ -81,9 +81,6 @@ export class AuthService {
     user.save();
 
     await sendWelcomeEmail(user.email, user.userName);
-
-    return user;
-
   }
 
   async changePassword(password: string, email: string): Promise<IUser> {
