@@ -16,6 +16,7 @@ export class ProductController {
         this.getSingleProduct = this.getSingleProduct.bind(this);
         this.getProductsByCategoryId = this.getProductsByCategoryId.bind(this);
         this.searchProducts = this.searchProducts.bind(this);
+        this.getAllProductsMine = this.getAllProductsMine.bind(this);
     }
 
     async getAllProducts(req: Request, res: Response): Promise<void> {
