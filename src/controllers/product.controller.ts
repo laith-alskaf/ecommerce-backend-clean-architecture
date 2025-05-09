@@ -130,12 +130,13 @@ export class ProductController {
 
     async searchProducts(req: Request, res: Response): Promise<void> {
         try {
+            const userId=req.user.id;
             const { title = '', categoryId = '', page = 1, limit = 10 } = req.query;
             const pageNumber = parseInt(page as string);
             const limitNumber = parseInt(limit as string);
             const productTitle = title as string;
             const category_Id = categoryId as string;
-            const prodcuts = await this.productService.searchProducts(pageNumber, limitNumber, productTitle, category_Id);
+            const prodcuts = await this.productService.searchProducts(pageNumber, limitNumber, productTitle, category_Id,userId);
             ResponseHandling.handleResponse({
                 res: res, statusCode: 200,
                 message: "This is the product",
