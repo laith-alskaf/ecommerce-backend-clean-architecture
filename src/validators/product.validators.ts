@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 import { CategoryModel } from '../database/mongodb/models/category.model';
+import { UserModel } from '../database/mongodb/models/user.model';
 
 
 const productSchema = Joi.object({
@@ -43,6 +44,16 @@ const searchProductSchema = Joi.object({
             const category = await CategoryModel.findOne({ id: value });
             if (!category) {
                 throw new Error('Category not found');
+            }
+            return value;
+        }
+      
+    }),
+    createdId: Joi.string().external(async (value) => {
+        if(value){
+            const userId = await UserModel.findOne({ id: value });
+            if (!userId) {
+                throw new Error('User not found');
             }
             return value;
         }

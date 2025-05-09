@@ -47,14 +47,14 @@ export class ProductService {
         return products;
     }
 
-    async searchProducts(page: number, limit: number, title: string, categoryId?: string,userId?:string): Promise<{ products: IProduct[], total: number }> {
+    async searchProducts(page: number, limit: number, title: string, categoryId?: string, createdId?: string): Promise<{ products: IProduct[], total: number }> {
         const filter: any = {};
         filter.title = { $regex: title, $options: 'i' };
         if (categoryId) {
             filter.categoryId = categoryId;
         }
-        if (userId) {
-            filter.createdBy = userId;
+        if (createdId) {
+            filter.createdBy = createdId;
         }
         const result = await this.productRepository.getAllProducts(page, limit, filter);
         if (!result) throw new Error("Product not found");
@@ -62,8 +62,8 @@ export class ProductService {
         return { products, total };
     }
 
-    async productsMine(page: number, limit: number,userId:string): Promise<{ products: IProduct[], total: number }> {
-        const result = await this.productRepository.getAllProductsByAdminId(page, limit, {createdBy:userId});
+    async productsMine(page: number, limit: number, userId: string): Promise<{ products: IProduct[], total: number }> {
+        const result = await this.productRepository.getAllProductsByAdminId(page, limit, { createdBy: userId });
         if (!result) throw new Error("No products found.");
         const { products, total } = result;
         return { products, total };

@@ -130,13 +130,13 @@ export class ProductController {
 
     async searchProducts(req: Request, res: Response): Promise<void> {
         try {
-            const userId=req.user.id;
-            const { title = '', categoryId = '', page = 1, limit = 10 } = req.query;
+            const { title = '', categoryId = '', page = 1, limit = 10, createdId = '' } = req.query;
             const pageNumber = parseInt(page as string);
             const limitNumber = parseInt(limit as string);
             const productTitle = title as string;
             const category_Id = categoryId as string;
-            const prodcuts = await this.productService.searchProducts(pageNumber, limitNumber, productTitle, category_Id,userId);
+            const created_Id = createdId as string;
+            const prodcuts = await this.productService.searchProducts(pageNumber, limitNumber, productTitle, category_Id, created_Id);
             ResponseHandling.handleResponse({
                 res: res, statusCode: 200,
                 message: "This is the product",
@@ -152,10 +152,10 @@ export class ProductController {
 
     async getAllProductsMine(req: Request, res: Response): Promise<void> {
         try {
-             const userId=req.user.id;
+            const userId = req.user.id;
             const page = parseInt(req.query.page as string) || 1;
             const limit = parseInt(req.query.limit as string) || 5;
-            const { products, total } = await this.productService.productsMine(page, limit,userId);
+            const { products, total } = await this.productService.productsMine(page, limit, userId);
             ResponseHandling.handleResponse({
                 res: res, statusCode: 200,
                 message: "Fetched products with pagination",
