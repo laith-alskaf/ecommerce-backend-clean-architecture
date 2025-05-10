@@ -16,7 +16,7 @@ const productSchema = Joi.object({
         }
         return value;
     }),
-    images: Joi.array().items(Joi.string().dataUri()),
+    images: Joi.array().items(Joi.string()),
     rating: Joi.object({
         rate: Joi.number().min(0).max(5),
         count: Joi.number().min(0)
