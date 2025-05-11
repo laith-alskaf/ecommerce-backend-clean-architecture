@@ -44,7 +44,7 @@ export const isAdmin = async (req: Request, res: Response, next: NextFunction) =
         if (decoded.role !== 'admin' && decoded.role !== 'superAdmin') {
             throw new Error("Unauthorized: SuperAmain and admin can do it that");
         }
-        req.user = { id: decoded.userId };
+        req.user = { id: decoded.id };
         next();
     } catch (error: any) {
         res.status(401).json({ message: error.message ?? 'Invalid token' });

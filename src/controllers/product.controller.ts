@@ -42,15 +42,14 @@ export class ProductController {
 
     async createProduct(req: Request, res: Response): Promise<void> {
         try {
+            const userId = req.user.id;
             const product: IProduct = req.body;
-            const token = req.header('Authorization')?.replace('Bearer ', '');
-            const createdProduct = await this.productService.createProduct(product, token!);
+            const createdProduct = await this.productService.createProduct(product, userId);
             ResponseHandling.handleResponse({
                 res: res, statusCode: 200,
                 message: "This is the product after updating ",
                 body: { product: createdProduct }
             });
-
         } catch (error: any) {
             ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
         }

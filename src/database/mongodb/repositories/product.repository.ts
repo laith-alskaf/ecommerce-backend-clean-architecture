@@ -31,7 +31,7 @@ export class ProductRepository {
     }
 
 
-    async getAllProductsByAdminId(page: number, limit: number, filter: {}): Promise<{ products: IProduct[], total: number } | null> {
+    async getAllProductsByAdminId(page: number, limit: number, filter: any): Promise<{ products: IProduct[], total: number } | null> {
         const products = await ProductModel.find(filter)
             .sort({ createdAt: -1 })
             .skip((page - 1) * limit)

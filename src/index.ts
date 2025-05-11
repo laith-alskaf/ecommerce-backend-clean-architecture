@@ -5,6 +5,7 @@ import authRoutes from './routes/auth.route'
 import productRouters from './routes/product.route';
 import categoryRouters from './routes/category.route';
 import WishlistRouters from './routes/wishlist.route';
+import path from 'path';
 dotenv.config();
 
 const app = express();
@@ -18,6 +19,7 @@ app.use("/api/product", productRouters);
 app.use("/api/category",categoryRouters);
 app.use("/api/wishlist",WishlistRouters);
 
+app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

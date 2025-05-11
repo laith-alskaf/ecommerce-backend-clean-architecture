@@ -8,9 +8,8 @@ export class ProductService {
         this.productRepository = new ProductRepository();
     }
 
-    async createProduct(product: IProduct, token: string): Promise<IProduct> {
-        const decoded: any = jwt.verify(token!, process.env.JWT_SECRET!);
-        product.createdBy = decoded.id;
+    async createProduct(product: IProduct, userId: string): Promise<IProduct> {
+        product.createdBy = userId;
         const createdProduct = await this.productRepository.createProduct(product);
         if (!createdProduct) throw new Error("Please, try again after 1m");
         return createdProduct;

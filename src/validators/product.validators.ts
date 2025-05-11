@@ -16,11 +16,11 @@ const productSchema = Joi.object({
         }
         return value;
     }),
-    images: Joi.array().items(Joi.string()),
-    rating: Joi.object({
-        rate: Joi.number().min(0).max(5),
-        count: Joi.number().min(0)
-    })
+    images: Joi.array().items(Joi.string().uri()),
+    // rating: Joi.object({
+    //     rate: Joi.number().min(0).max(5),
+    //     count: Joi.number().min(0)
+    // })
 });
 
 const productIdSchema = Joi.object({
@@ -40,24 +40,24 @@ const updateProductSchema = Joi.object({
 const searchProductSchema = Joi.object({
     title: Joi.string().required(),
     categoryId: Joi.string().external(async (value) => {
-        if(value){
+        if (value) {
             const category = await CategoryModel.findOne({ id: value });
             if (!category) {
                 throw new Error('Category not found');
             }
             return value;
         }
-      
+
     }),
     createdId: Joi.string().external(async (value) => {
-        if(value){
+        if (value) {
             const userId = await UserModel.findOne({ id: value });
             if (!userId) {
                 throw new Error('User not found');
             }
             return value;
         }
-      
+
     }),
     page: Joi.number().min(1).default(1),
     limit: Joi.number().min(1).default(10)
@@ -65,6 +65,8 @@ const searchProductSchema = Joi.object({
 
 export const validateProduct = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try {
+        const imageName = req.file?.filename;
+        req.body.images = [`${process.env.BASE_URL}/uploads/products/${imageName}`];
         const { error } = await productSchema.validateAsync(req.body, {
             abortEarly: false,
             stripUnknown: true
