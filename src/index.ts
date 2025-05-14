@@ -1,32 +1,22 @@
-import dotenv from 'dotenv'
-import connectDB from "./database/mongodb/connection";
-import express from 'express';
-import authRoutes from './routes/auth.route'
-import productRouters from './routes/product.route';
-import categoryRouters from './routes/category.route';
-import WishlistRouters from './routes/wishlist.route';
-import path from 'path';
-dotenv.config();
+import Server from './presentation/server';
+import Database from './infrastructure/database/mongodb';
 
-const app = express();
-connectDB();
-app.use(express.json());
-// app.use(cookieParser());
-// app.use(cors());
+async function main() {
+    try {
+        const server = new Server();
+        const db = Database.getInstance();
 
-app.use("/api/auth", authRoutes);
-app.use("/api/product", productRouters);
-app.use("/api/category",categoryRouters);
-app.use("/api/wishlist",WishlistRouters);
+        await db.connect();
 
-app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
+        server.init();
+        await server.run();
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log("Server is running on port 5000");
-});
+    } catch (error) {
+        console.error("Failed to start the application:", error);
+        process.exit(1);
+    }
+}
 
-export default app;
-
+main();
 
 //pass  laithalskaf   B6a0pzdGluwoOpsy

@@ -1,0 +1,43 @@
+import { UserRepository } from "../../../domain/repository/user.repository";
+import { EncryptionService } from "../../../domain/services/encryption.service";
+import { IdGeneratorService } from "../../../domain/services/id-generator.service";
+import { MailService } from "../../../domain/services/mail.service";
+import { RandomStringGenerator } from "../../../domain/services/number-generateor.service";
+import { sendVerificationEmail } from "../../../presentation/utils/email/emails";
+import { RegisterDTO } from "../../dtos/user.dto";
+import { VERIFICATION_EMAIL_TEMPLATE } from "../../../domain/emails_template/verification_email_template";
+import { BadRequestError, ConflictRequestError } from "../../errors/application-error";
+
+export class RegisterUseCase {
+    private otpCodeExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    constructor(
+        private readonly emailService: MailService,
+        private readonly userRepository: UserRepository,
+        private readonly encryptionService: EncryptionService,
+        private readonly otpGeneratorService: RandomStringGenerator,
+        private readonly uuidGeneratorService: IdGeneratorService,
+    ) { }
+    execute = async (registerData: RegisterDTO): Promise<void> => {
+        const existingUser = await this.userRepository.findByEmail(registerData.email);
+
+        if (existingUser) {
+            if (!existingUser.isEmailVerified) {
+                throw new BadRequestError("Please Verify Your Email");
+            }
+            else {
+                throw new ConflictRequestError("User already exists");
+            }
+        }
+        const hashedPassword = await this.encryptionService.hash(registerData.password);
+        const otpCode = this.otpGeneratorService.generate();
+        registerData.password = hashedPassword;
+        const user = {
+            ...registerData,
+            id: this.uuidGeneratorService.generate(),
+            otpCode: otpCode,
+            otpCodeExpires: this.otpCodeExpiresAt
+        };
+        await this.userRepository.create(user);
+        await this.emailService.send(registerData.email, 'Verify your email', VERIFICATION_EMAIL_TEMPLATE.replace("verificationCode", otpCode))
+    }
+}
