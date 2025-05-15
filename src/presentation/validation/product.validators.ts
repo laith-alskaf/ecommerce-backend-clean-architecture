@@ -65,7 +65,7 @@ const schemas = {
       'number.base': Messages.PRODUCT.VALIDATION.PAGINATION_VALIDATION.LIMIT_INVALID_EN,
       'number.min': Messages.PRODUCT.VALIDATION.PAGINATION_VALIDATION.LIMIT_MIN_EN
     })
-  }),
+  }), 
 
   updateProduct: Joi.object({
     productId: Joi.string().required().messages({

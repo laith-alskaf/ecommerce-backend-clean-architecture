@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { ResponseHandling } from "../utils/handleRespose";
-
+import { ResponseHandling } from "../../application/response/handleRespose";
+import { CreateProductDTO, DeleteProductDTO, GetProductsByUserIdDTO, PeginationProductDTO, SearchProductDTO, UpdateProductDTO } from '../../application/dtos/product.dto';
+import { Messages, StatusCodes } from '../config/constant';
 import {
     GetProductByIdUseCase,
     GetProductsByCategoryIdUseCase,
@@ -12,8 +13,6 @@ import {
     SearchProductsUseCase,
 } from "../../application/use-cases/product";
 
-import { CreateProductDTO, DeleteProductDTO, GetProductsByUserIdDTO, PeginationProductDTO, SearchProductDTO, UpdateProductDTO } from '../../application/dtos/product.dto';
-import { Messages, StatusCodes } from '../config/constant';
 
 export class ProductController {
 

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { WishlistService } from "../../services/wishlist.service";
-import { ResponseHandling } from "../utils/handleRespose";
+import { ResponseHandling } from "../../application/response/handleRespose";
 
 export class WishlistController {
     wishlistService: WishlistService;

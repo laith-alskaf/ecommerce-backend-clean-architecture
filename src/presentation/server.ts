@@ -24,6 +24,7 @@ export default class Server {
     private setupRoutes() {
         this.app.use('/api/auth', authRoutes(this.container.authController));
         this.app.use('/api/product', productRouters(this.container.productController));
+        this.app.use('/api/category', productRouters(this.container.categoryController));
 
     }
 

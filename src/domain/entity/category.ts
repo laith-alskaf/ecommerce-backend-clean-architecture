@@ -1,8 +1,20 @@
-export interface ICategory{
-  id: string;
+import { CategoryInfoDTO } from "../../application/dtos/category.dto";
+
+export interface ICategory {
+  _id: string;
   name: string;
-  description?: string;
+  description: string | null;
   createdBy: string,
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export class CategoryMapper {
+  static toDTO(category: ICategory): CategoryInfoDTO {
+    return {
+      _id: category._id,
+      name: category.name,
+      description: category.description
+    };
+  }
 }

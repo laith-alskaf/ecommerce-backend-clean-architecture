@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { ProductController } from '../controllers/product.controller';
-import { validatePaginationProduct, validateProduct, validateProductId, validateSearchProduct, validateUpdateProduct } from '../validators/product.validators';
+import { validatePaginationProduct, validateProduct, validateProductId, validateSearchProduct, validateUpdateProduct } from '../validation/product.validators';
 import { checkAdminForDUProduct, isAdmin } from '../middleware/auth.middleware';
 
 

@@ -1,4 +1,7 @@
-// Use Cases
+import { MongoProductRepository } from '../../infrastructure/repositories/product.repository';
+import { ProductController } from '../controllers/product.controller';
+import { UuidGeneratorService } from '../../infrastructure/srevices/uuid-generator.service';
+
 import {
     GetProductByIdUseCase,
     GetProductsByCategoryIdUseCase,
@@ -9,18 +12,6 @@ import {
     GetAllProductsUseCase,
     SearchProductsUseCase,
 } from "../../application/use-cases/product";
-
-// Repository
-import { MongoProductRepository } from '../../infrastructure/repositories/product.repository';
-
-
-//Controller
-import { ProductController } from '../controllers/product.controller';
-
-//Services
-import { UuidGeneratorService } from '../../infrastructure/srevices/uuid-generator.service';
-
-
 
 interface ProductDependenciesType {
     productRepository: MongoProductRepository;

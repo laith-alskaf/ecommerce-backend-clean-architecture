@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
-import { ResponseHandling } from "../utils/handleRespose";
 import { ChangePasswordDTO, ForgotPasswordDTO, LoginDTO, RegisterDTO, VerifyEmailDTO } from '../../application/dtos/user.dto';
 import { Messages, StatusCodes } from '../config/constant';
-
+import { ResponseHandling } from '../../application/response/handleRespose';
 import {
   LoginUseCase,
   RegisterUseCase,
@@ -11,9 +10,7 @@ import {
   ForgotPasswordUseCase,
 } from "../../application/use-cases/auth";
 
-/**
- * المتحكم المسؤول عن عمليات المصادقة والتسجيل
- */
+
 export class AuthController {
 
   constructor(
@@ -24,9 +21,7 @@ export class AuthController {
     private readonly changePasswordUseCase: ChangePasswordUseCase,
   ) { }
 
-  /**
-   * تسجيل مستخدم جديد
-   */
+
   async register(req: Request, res: Response): Promise<void> {
     try {
       const registerData: RegisterDTO = req.body;
@@ -45,9 +40,7 @@ export class AuthController {
     }
   }
 
-  /**
-   * تسجيل دخول المستخدم
-   */
+
   async login(req: Request, res: Response): Promise<void> {
     try {
       const loginData: LoginDTO = req.body;
@@ -75,9 +68,7 @@ export class AuthController {
     }
   }
 
-  /**
-   * تسجيل خروج المستخدم
-   */
+
   async logout(_req: Request, res: Response): Promise<void> {
     ResponseHandling.handleResponse({
       res,
@@ -86,9 +77,7 @@ export class AuthController {
     });
   }
 
-  /**
-   * إعادة تعيين كلمة المرور عند النسيان
-   */
+
   async forgotPassword(req: Request, res: Response): Promise<void> {
     try {
       const forgotPasswordDTO: ForgotPasswordDTO = req.body;
@@ -107,9 +96,7 @@ export class AuthController {
     }
   }
 
-  /**
-   * التحقق من البريد الإلكتروني
-   */
+
   async verifyEmail(req: Request, res: Response): Promise<void> {
     try {
       const verifyEmailDTO: VerifyEmailDTO = req.body;
@@ -128,9 +115,7 @@ export class AuthController {
     }
   }
 
-  /**
-   * تغيير كلمة المرور
-   */
+
   async changePassword(req: Request, res: Response): Promise<void> {
     try {
       const changePasswordDTO: ChangePasswordDTO = req.body;

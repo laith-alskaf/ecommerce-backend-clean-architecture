@@ -1,26 +1,27 @@
 import { ICategory } from "../../domain/entity/category";
+import { CategoryRepository } from "../../domain/repository/category.repository";
 import { CategoryModel } from "../database/mongodb/models/category.model";
 
-export class CategoryRepository {
+export class MongoCategoryRepository implements CategoryRepository {
 
 
-    async getAllCategory(): Promise<ICategory[] | null> {
+    async allCategory(): Promise<ICategory[] | null> {
         return await CategoryModel.find({});
     }
 
-    async createCategory(category: ICategory): Promise<ICategory> {
-        return await CategoryModel.create(category);
+    async create(category: ICategory): Promise<void> {
+        await CategoryModel.create(category);
     }
 
-    async deleteCategory(categoryId: string): Promise<any> {
-        return await CategoryModel.deleteOne({ id: categoryId });
+    async delete(id: string): Promise<void> {
+        await CategoryModel.findByIdAndDelete(id);
     }
 
-    async updateCategory(category: ICategory, categoryId: string): Promise<ICategory | null> {
-        return await CategoryModel.findOneAndUpdate({ id: categoryId }, category, { new: true });
+    async update(id: string, category: Partial<ICategory>): Promise<ICategory | null> {
+        return await CategoryModel.findByIdAndUpdate(id, category, { new: true });
     }
 
-    async getSingleProductById(categoryId: string): Promise<ICategory | null> {
-        return await CategoryModel.findOne({ id: categoryId });
+    async findById(id: string): Promise<ICategory | null> {
+        return await CategoryModel.findById(id);
     }
 }

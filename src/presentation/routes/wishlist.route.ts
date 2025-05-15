@@ -1,8 +1,8 @@
 import express from 'express';
-import { validateCategory } from '../validators/category.validators';
+import { validateCategory } from '../validation/category.validators';
 import { isAuthenticated } from '../middleware/auth.middleware';
 import { WishlistController } from '../controllers/wishtlist.controller';
-import { validateAddAndRemoveProduct } from '../validators/wishlist.validators';
+import { validateAddAndRemoveProduct } from '../validation/wishlist.validators';
 
 const WishlistRouters = express.Router();
 const wishlistController = new WishlistController();

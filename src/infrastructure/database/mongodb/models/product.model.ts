@@ -16,7 +16,7 @@ const productSchema = new Schema<ProductDocument>({
         required: true,
         validate: {
             validator: async (categoryId: string) => {
-                const category = await CategoryModel.findOne({ id: categoryId });
+                const category = await CategoryModel.findById(categoryId);
                 return !!category;
             },
             message: 'Category does not exist'
