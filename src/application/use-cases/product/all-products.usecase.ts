@@ -1,3 +1,4 @@
+import { ProductMapper } from "../../../domain/entity/product";
 import { ProductRepository } from "../../../domain/repository/product.repository";
 import { Messages } from "../../../presentation/config/constant";
 import { PeginationProductDTO, ProductInfoDTO } from "../../dtos/product.dto";
@@ -16,18 +17,7 @@ export class GetAllProductsUseCase {
 
         const { products, total } = result;
 
-        const productData: ProductInfoDTO[] = [];
-        products.forEach((product) => {
-            productData.push({
-                title: product?.title!,
-                stockQuantity: product?.stockQuantity!,
-                description: product?.description!,
-                price: product?.price!,
-                categoryId: product?.categoryId!,
-                images: product?.images || null,
-            });
-
-        });
+        const productData: ProductInfoDTO[] = products.map(ProductMapper.toDTO);
 
         return { productData, total };
 

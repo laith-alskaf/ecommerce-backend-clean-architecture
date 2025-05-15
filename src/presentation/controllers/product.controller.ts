@@ -12,7 +12,7 @@ import {
     SearchProductsUseCase,
 } from "../../application/use-cases/product";
 
-import { CreateProductDTO, GetProductsByUserIdDTO, PeginationProductDTO, SearchProductDTO, UpdateProductDTO } from '../../application/dtos/product.dto';
+import { CreateProductDTO, DeleteProductDTO, GetProductsByUserIdDTO, PeginationProductDTO, SearchProductDTO, UpdateProductDTO } from '../../application/dtos/product.dto';
 import { Messages, StatusCodes } from '../config/constant';
 
 export class ProductController {
@@ -67,8 +67,8 @@ export class ProductController {
 
     async deleteProduct(req: Request, res: Response): Promise<void> {
         try {
-            const { productId } = req.body;
-            await this.deleteProductUseCase.execute(productId);
+            const deleteProductDTO: DeleteProductDTO = req.body;
+            await this.deleteProductUseCase.execute(deleteProductDTO);
             ResponseHandling.handleResponse({
                 res: res, statusCode: StatusCodes.OK,
                 message: Messages.PRODUCT.DELETE_SUCCESS_EN

@@ -24,8 +24,8 @@ export class MongoProductRepository implements ProductRepository {
         return await ProductModel.findByIdAndUpdate(productId, productData, { new: true }).exec();
     }
 
-    async delete(productId: string): Promise<void> {
-        await ProductModel.findByIdAndDelete(productId).exec();
+    async delete(id: string): Promise<void> {
+        await ProductModel.findByIdAndDelete(id).exec();
     }
 
     async findByCategoryId(categoryId: string): Promise<IProduct[] | null> {

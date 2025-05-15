@@ -15,6 +15,7 @@ export interface UpdateProductDTO {
     updatedAt: Date
 }
 export interface ProductInfoDTO {
+    _id: string,
     title: string,
     stockQuantity: number,
     description: string,

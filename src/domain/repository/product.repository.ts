@@ -7,5 +7,5 @@ export interface ProductRepository {
     allProduct(page: number, limit: number, filter: {}): Promise<{ products: IProduct[], total: number } | null>;
     findByUserId(page: number, limit: number, filter: any): Promise<{ products: IProduct[], total: number } | null>;
     update(productId: string, productData: Partial<IProduct>): Promise<IProduct | null>;
-    delete(productId: string): Promise<void>;
+    delete(id: string): Promise<void>;
 }

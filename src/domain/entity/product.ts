@@ -18,6 +18,7 @@ export interface IProduct {
 export class ProductMapper {
   static toDTO(product: IProduct): ProductInfoDTO {
     return {
+      _id: product._id,
       title: product.title,
       stockQuantity: product.stockQuantity,
       description: product.description,
