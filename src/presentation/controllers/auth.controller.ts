@@ -1,94 +1,151 @@
 import { Request, Response } from 'express';
 import { ResponseHandling } from "../utils/handleRespose";
-import { RegisterUseCase } from '../../application/use-cases/auth';
-import { ChangePasswordDTO, ForgotPasswordDTO, LoginDTO, RegisterDTO } from '../../application/dtos/user.dto';
+import { ChangePasswordDTO, ForgotPasswordDTO, LoginDTO, RegisterDTO, VerifyEmailDTO } from '../../application/dtos/user.dto';
 import { Messages, StatusCodes } from '../config/constant';
-import { LoginUseCase } from '../../application/use-cases/auth/login.usecase';
-import { VerifiyEmailUseCase } from '../../application/use-cases/auth/verify-email.usecase';
-import { ForgotPasswordUseCase } from '../../application/use-cases/auth/forgot-password.usecase';
-import { ChangePasswordUseCase } from '../../application/use-cases/auth/change-password.usecase';
 
+import {
+  LoginUseCase,
+  RegisterUseCase,
+  VerifiyEmailUseCase as VerifyEmailUseCase, // تصحيح الاسم هنا أيضاً
+  ChangePasswordUseCase,
+  ForgotPasswordUseCase,
+} from "../../application/use-cases/auth";
 
+/**
+ * المتحكم المسؤول عن عمليات المصادقة والتسجيل
+ */
 export class AuthController {
 
   constructor(
     private readonly registerUseCase: RegisterUseCase,
     private readonly loginUseCase: LoginUseCase,
     private readonly forgotPasswordUseCase: ForgotPasswordUseCase,
-    private readonly verifiyEmailUseCase: VerifiyEmailUseCase,
+    private readonly verifyEmailUseCase: VerifyEmailUseCase, // تصحيح الاسم
     private readonly changePasswordUseCase: ChangePasswordUseCase,
   ) { }
 
+  /**
+   * تسجيل مستخدم جديد
+   */
   async register(req: Request, res: Response): Promise<void> {
     try {
       const registerData: RegisterDTO = req.body;
       await this.registerUseCase.execute(registerData);
       ResponseHandling.handleResponse({
-        res: res, statusCode: StatusCodes.CREATED,
-        message: Messages.REGISTER_SUCCESS,
+        res,
+        statusCode: StatusCodes.CREATED,
+        message: Messages.AUTH.REGISTER_SUCCESS,
       });
     } catch (error: any) {
-      ResponseHandling.handleResponse({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+      ResponseHandling.handleResponse({
+        res,
+        statusCode: StatusCodes.BAD_REQUEST,
+        message: error.message
+      });
     }
   }
 
-
+  /**
+   * تسجيل دخول المستخدم
+   */
   async login(req: Request, res: Response): Promise<void> {
     try {
       const loginData: LoginDTO = req.body;
       const { token, user } = await this.loginUseCase.execute(loginData);
       ResponseHandling.handleResponse({
-        res: res, statusCode: StatusCodes.OK, message: Messages.LOGIN_SUCCESS, body: {
-          token: token,
+        res,
+        statusCode: StatusCodes.OK,
+        message: Messages.AUTH.LOGIN_SUCCESS,
+        body: {
+          token,
           userInfo: {
-            "id": user._id,
-            "userName": user.userName,
-            "email": user.email,
-            "role": user.role
+            id: user._id,
+            userName: user.userName,
+            email: user.email,
+            role: user.role
           }
         }
       });
     } catch (error: any) {
-      ResponseHandling.handleResponse({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+      ResponseHandling.handleResponse({
+        res,
+        statusCode: StatusCodes.BAD_REQUEST,
+        message: error.message
+      });
     }
   }
 
-  async logout(_req: Request, res: Response) {
-    ResponseHandling.handleResponse({ res: res, statusCode: 200, message: "Logged out successfully" });
+  /**
+   * تسجيل خروج المستخدم
+   */
+  async logout(_req: Request, res: Response): Promise<void> {
+    ResponseHandling.handleResponse({
+      res,
+      statusCode: StatusCodes.OK,
+      message: Messages.AUTH.LOGOUT_SUCCESS || "Logged out successfully"
+    });
   }
 
+  /**
+   * إعادة تعيين كلمة المرور عند النسيان
+   */
   async forgotPassword(req: Request, res: Response): Promise<void> {
     try {
       const forgotPasswordDTO: ForgotPasswordDTO = req.body;
       await this.forgotPasswordUseCase.execute(forgotPasswordDTO);
-      ResponseHandling.handleResponse({ res: res, statusCode: 200, message: Messages.FORGOT_PASSWORD_SUCCESS });
-    } catch (error: any) {
-      ResponseHandling.handleResponse({ res: res, statusCode: 500 });
-    }
-  }
-
-  async verifiyEmail(req: Request, res: Response) {
-    try {
-      const verifyEmailDTO = req.body;
-      await this.verifiyEmailUseCase.execute(verifyEmailDTO);
       ResponseHandling.handleResponse({
-        res: res, message: Messages.VERIFY_SUCCESS, statusCode: StatusCodes.OK
+        res,
+        statusCode: StatusCodes.OK,
+        message: Messages.AUTH.FORGOT_PASSWORD_SUCCESS
       });
     } catch (error: any) {
-      ResponseHandling.handleResponse({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+      ResponseHandling.handleResponse({
+        res,
+        statusCode: StatusCodes.BAD_REQUEST,
+        message: error.message
+      });
     }
   }
 
+  /**
+   * التحقق من البريد الإلكتروني
+   */
+  async verifyEmail(req: Request, res: Response): Promise<void> {
+    try {
+      const verifyEmailDTO: VerifyEmailDTO = req.body;
+      await this.verifyEmailUseCase.execute(verifyEmailDTO);
+      ResponseHandling.handleResponse({
+        res,
+        statusCode: StatusCodes.OK,
+        message: Messages.AUTH.VERIFY_SUCCESS_EN
+      });
+    } catch (error: any) {
+      ResponseHandling.handleResponse({
+        res,
+        statusCode: StatusCodes.BAD_REQUEST,
+        message: error.message
+      });
+    }
+  }
 
-  async changePassword(req: Request, res: Response) {
+  /**
+   * تغيير كلمة المرور
+   */
+  async changePassword(req: Request, res: Response): Promise<void> {
     try {
       const changePasswordDTO: ChangePasswordDTO = req.body;
       await this.changePasswordUseCase.execute(changePasswordDTO);
-      ResponseHandling.handleResponse({ res: res, statusCode: 200, message: Messages.RESET_PASSWORD_SUCCESS });
+      ResponseHandling.handleResponse({
+        res,
+        statusCode: StatusCodes.OK,
+        message: Messages.AUTH.RESET_PASSWORD_SUCCESS
+      });
     } catch (error: any) {
-      ResponseHandling.handleResponse({ res: res, statusCode: 500, message: error.message });
+      ResponseHandling.handleResponse({
+        res,
+        statusCode: StatusCodes.BAD_REQUEST,
+        message: error.message
+      });
     }
   }
-
-
 }

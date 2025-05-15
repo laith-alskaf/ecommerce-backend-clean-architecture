@@ -1,173 +1,193 @@
 import { Request, Response } from 'express';
-import { ProductService } from '../../services/product.service';
 import { ResponseHandling } from "../utils/handleRespose";
-import { IProduct } from '../../domain/entity/product';
 
+import {
+    GetProductByIdUseCase,
+    GetProductsByCategoryIdUseCase,
+    GetProductsByUserIdUseCase,
+    DeleteProductUseCase,
+    CreateProductUseCase,
+    UpdatedProductUseCase,
+    GetAllProductsUseCase,
+    SearchProductsUseCase,
+} from "../../application/use-cases/product";
+
+import { CreateProductDTO, GetProductsByUserIdDTO, PeginationProductDTO, SearchProductDTO, UpdateProductDTO } from '../../application/dtos/product.dto';
+import { Messages, StatusCodes } from '../config/constant';
 
 export class ProductController {
-    productService: ProductService;
 
-    constructor() {
-        this.productService = new ProductService();
-        this.getAllProducts = this.getAllProducts.bind(this);
-        this.createProduct = this.createProduct.bind(this);
-        this.deleteProduct = this.deleteProduct.bind(this);
-        this.updateProduct = this.updateProduct.bind(this);
-        this.getSingleProduct = this.getSingleProduct.bind(this);
-        this.getProductsByCategoryId = this.getProductsByCategoryId.bind(this);
-        this.searchProducts = this.searchProducts.bind(this);
-        this.getAllProductsMine = this.getAllProductsMine.bind(this);
-    }
+    constructor(
+        private readonly getProductByIdUseCase: GetProductByIdUseCase,
+        private readonly getProductsByCategoryIdUseCase: GetProductsByCategoryIdUseCase,
+        private readonly getProductsByUserIdUseCase: GetProductsByUserIdUseCase,
+        private readonly deleteProductUseCase: DeleteProductUseCase,
+        private readonly createProductUseCase: CreateProductUseCase,
+        private readonly updatedProductUseCase: UpdatedProductUseCase,
+        private readonly getAllProductsUseCase: GetAllProductsUseCase,
+        private readonly searchProductsUseCase: SearchProductsUseCase
+    ) { }
 
     async getAllProducts(req: Request, res: Response): Promise<void> {
         try {
-            const page = parseInt(req.query.page as string) || 1;
-            const limit = parseInt(req.query.limit as string) || 5;
-            const { products, total } = await this.productService.getAllProducts(page, limit);
+            const peginationProductDTO: PeginationProductDTO = {
+                page: parseInt(req.query.page as string) || 1,
+                limit: parseInt(req.query.limit as string) || 5
+            };
+            const { productData, total } = await this.getAllProductsUseCase.execute(peginationProductDTO, {});
             ResponseHandling.handleResponse({
-                res: res, statusCode: 200,
-                message: "Fetched products with pagination",
+                res: res, statusCode: StatusCodes.OK,
+                message: Messages.PRODUCT.GET_ALL_SUCCESS_EN,
                 body: {
-                    currentPage: page,
-                    totalPages: Math.ceil(total / limit),
+                    currentPage: peginationProductDTO.page,
+                    totalPages: Math.ceil(total / peginationProductDTO.limit),
                     totalItems: total,
-                    products: products,
+                    products: productData,
                 }
             });
 
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+            ResponseHandling.handleResponse({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
         }
     }
 
     async createProduct(req: Request, res: Response): Promise<void> {
         try {
-            const userId = req.user.id;
-            const product: IProduct = req.body;
-            const createdProduct = await this.productService.createProduct(product, userId);
+            const product: CreateProductDTO = req.body;
+            product.createdBy = req.user.id,
+                await this.createProductUseCase.execute(product);
             ResponseHandling.handleResponse({
-                res: res, statusCode: 200,
-                message: "This is the product after updating ",
-                body: { product: createdProduct }
+                res: res, statusCode: StatusCodes.CREATED,
+                message: Messages.PRODUCT.CREATE_SUCCESS_EN,
             });
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+            ResponseHandling.handleResponse({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
         }
     }
 
     async deleteProduct(req: Request, res: Response): Promise<void> {
         try {
             const { productId } = req.body;
-            console.log(productId);
-            if (!productId) throw new Error("The prodcut not updated");
-            await this.productService.deleteProduct(productId);
+            await this.deleteProductUseCase.execute(productId);
             ResponseHandling.handleResponse({
-                res: res, statusCode: 200,
-                message: "Product deleted successfully"
+                res: res, statusCode: StatusCodes.OK,
+                message: Messages.PRODUCT.DELETE_SUCCESS_EN
             });
 
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+            ResponseHandling.handleResponse({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: Messages.PRODUCT.NOT_FOUND_OPERATION_EN });
         }
     }
 
     async updateProduct(req: Request, res: Response): Promise<void> {
         try {
             const { product, productId } = req.body;
-            console.log(product);
-            if (!product) throw new Error("The prodcut not updated");
-            const updatedProduct = await this.productService.updateProduct(productId, product);
+            const updateProductDTO: UpdateProductDTO = {
+                productId,
+                product,
+                updatedAt: new Date(),
+            }
+            const updatedProduct = await this.updatedProductUseCase.execute(updateProductDTO);
             ResponseHandling.handleResponse({
-                res: res, statusCode: 200,
-                message: "Product deleted successfully",
+                res: res, statusCode: StatusCodes.OK,
+                message: Messages.PRODUCT.UPDATE_SUCCESS_EN,
                 body: {
                     product: updatedProduct
                 }
             });
 
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+            ResponseHandling.handleResponse({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: Messages.PRODUCT.NOT_FOUND_OPERATION_EN });
         }
     }
 
     async getSingleProduct(req: Request, res: Response): Promise<void> {
         try {
             const { productId } = req.params;
-            if (!productId) throw new Error("Product not found");
-            const prodcut = await this.productService.getSingleProduct(productId);
+            const prodcut = await this.getProductByIdUseCase.execute(productId);
             ResponseHandling.handleResponse({
-                res: res, statusCode: 200,
-                message: "This is the product",
+                res: res, statusCode: StatusCodes.OK,
+                message: Messages.PRODUCT.GET_SUCCESS_EN,
                 body: {
                     product: prodcut
                 }
             });
 
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+            ResponseHandling.handleResponse({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
         }
     }
 
     async getProductsByCategoryId(req: Request, res: Response): Promise<void> {
         try {
             const { categoryId } = req.params;
-            if (!categoryId) throw new Error("Product not found");
-            const prodcuts = await this.productService.getProductsByCategoryId(categoryId);
+            const prodcuts = await this.getProductsByCategoryIdUseCase.execute(categoryId);
             ResponseHandling.handleResponse({
-                res: res, statusCode: 200,
-                message: "This is the product",
+                res: res, statusCode: StatusCodes.OK,
+                message: Messages.PRODUCT.GET_ALL_SUCCESS_EN,
                 body: {
-                    product: prodcuts
+                    products: prodcuts
                 }
             });
 
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+            ResponseHandling.handleResponse({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: Messages.PRODUCT.NOT_FOUND_PRODUCTS_EN });
         }
     }
 
 
     async searchProducts(req: Request, res: Response): Promise<void> {
         try {
-            const { title = '', categoryId = '', page = 1, limit = 10, createdId = '' } = req.query;
-            const pageNumber = parseInt(page as string);
-            const limitNumber = parseInt(limit as string);
-            const productTitle = title as string;
-            const category_Id = categoryId as string;
-            const created_Id = createdId as string;
-            const prodcuts = await this.productService.searchProducts(pageNumber, limitNumber, productTitle, category_Id, created_Id);
+            const { title = '', categoryId = '', page = 1, limit = 10, createdId } = req.query;
+            const searchProductDTO: SearchProductDTO = {
+                title: title as string,
+                categoryId: categoryId as string,
+                createdId: createdId as string,
+                peginationProduct: {
+                    page: parseInt(page as string),
+                    limit: parseInt(limit as string),
+                }
+            }
+            const prodcuts = await this.searchProductsUseCase.execute(searchProductDTO);
             ResponseHandling.handleResponse({
-                res: res, statusCode: 200,
-                message: "This is the product",
+                res: res, statusCode: StatusCodes.OK,
+                message: Messages.PRODUCT.GET_ALL_SUCCESS_EN,
                 body: {
                     product: prodcuts
                 }
             });
 
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+            ResponseHandling.handleResponse({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: Messages.PRODUCT.NO_RESULTS_EN });
         }
     }
 
-    async getAllProductsMine(req: Request, res: Response): Promise<void> {
+    async getProductsByUserId(req: Request, res: Response): Promise<void> {
         try {
             const userId = req.user.id;
-            const page = parseInt(req.query.page as string) || 1;
-            const limit = parseInt(req.query.limit as string) || 5;
-            const { products, total } = await this.productService.productsMine(page, limit, userId);
+            const { page = 1, limit = 10 } = req.query;
+            const getProductsByUserIdDTO: GetProductsByUserIdDTO = {
+                filter: { createdBy: userId },
+                peginationProduct: {
+                    page: parseInt(page as string),
+                    limit: parseInt(limit as string),
+                }
+
+            }
+            const { productData, total } = await this.getProductsByUserIdUseCase.execute(getProductsByUserIdDTO);
             ResponseHandling.handleResponse({
-                res: res, statusCode: 200,
-                message: "Fetched products with pagination",
+                res: res, statusCode: StatusCodes.OK,
+                message: Messages.PRODUCT.GET_ALL_SUCCESS_EN,
                 body: {
-                    currentPage: page,
-                    totalPages: Math.ceil(total / limit),
+                    currentPage: getProductsByUserIdDTO.peginationProduct.page,
+                    totalPages: Math.ceil(total / getProductsByUserIdDTO.peginationProduct.limit),
                     totalItems: total,
-                    products: products,
+                    products: productData,
                 }
             });
 
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+            ResponseHandling.handleResponse({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: Messages.PRODUCT.NOT_FOUND_PRODUCTS_EN });
         }
     }
 

@@ -1,14 +1,14 @@
 import { WELCOME_EMAIL_TEMPLATE } from "../../../domain/emails_template/welcome_email_template";
 import { UserRepository } from "../../../domain/repository/user.repository";
 import { MailService } from "../../../domain/services/mail.service";
-import { verifyEmailDTO } from "../../dtos/user.dto";
+import { VerifyEmailDTO } from "../../dtos/user.dto";
 
 export class VerifiyEmailUseCase {
     constructor(
         private readonly emailService: MailService,
         private readonly userRepository: UserRepository,
     ) { }
-    execute = async (verifyEmailDTO: verifyEmailDTO): Promise<void> => {
+    execute = async (verifyEmailDTO: VerifyEmailDTO): Promise<void> => {
         const user = await this.userRepository.findByCode(verifyEmailDTO.code);
         if (!user) throw new Error("Invalid or expired verification code");
 

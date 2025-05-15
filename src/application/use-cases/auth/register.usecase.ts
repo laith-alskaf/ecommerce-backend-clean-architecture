@@ -33,7 +33,7 @@ export class RegisterUseCase {
         registerData.password = hashedPassword;
         const user = {
             ...registerData,
-            id: this.uuidGeneratorService.generate(),
+            _id: this.uuidGeneratorService.generate(),
             otpCode: otpCode,
             otpCodeExpires: this.otpCodeExpiresAt
         };

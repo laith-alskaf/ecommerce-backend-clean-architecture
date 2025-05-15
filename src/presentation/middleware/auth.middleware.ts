@@ -1,101 +1,198 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { StatusCodes } from '../config/constant';
 import { UserModel } from '../../infrastructure/database/mongodb/models/user.model';
 import { ProductModel } from '../../infrastructure/database/mongodb/models/product.model';
 import { CategoryModel } from '../../infrastructure/database/mongodb/models/category.model';
 
+/**
+ * توسيع واجهة الطلب لإضافة معلومات المستخدم
+ */
 declare global {
     namespace Express {
         interface Request {
-            user: { id: string };
+            user: { 
+                id: string;
+                role?: string;
+            };
         }
     }
 }
 
-export const isAuthenticated = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+/**
+ * واجهة للبيانات المشفرة في التوكن
+ */
+interface DecodedToken {
+    id: string;
+    role?: string;
+    [key: string]: any;
+}
+
+/**
+ * الحصول على مفتاح JWT من متغيرات البيئة
+ */
+const getJwtSecret = (): string => {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+        console.warn('JWT_SECRET is not set in environment variables. Using default secret (not recommended for production).');
+        return 'default_jwt_secret_for_development_only';
+    }
+    return secret;
+};
+
+/**
+ * استخراج وفك تشفير التوكن من الطلب
+ */
+const extractAndVerifyToken = (req: Request): DecodedToken => {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+        throw new Error("المصادقة مطلوبة");
+    }
+    
     try {
-        const token = req.header('Authorization')?.replace('Bearer ', '');
-
-        if (!token) {
-            throw new Error("Authentication required");
-        }
-        const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'y#^o%ur!-@se^&cr!~%^et-ke$&y'); // Replace with your actual secret
-        const user = await UserModel.findOne({ id: decoded.id });
-        req.user = { id: decoded.id };
-        if (!user) {
-            throw new Error("User not found");
-        }
-
-        next();
-    } catch (error: any) {
-        res.status(401).json({ message: error.message ?? 'Invalid token' });
+        const decoded = jwt.verify(token, getJwtSecret()) as DecodedToken;
+        return decoded;
+    } catch (error) {
+        throw new Error("توكن غير صالح");
     }
 };
 
-export const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
+/**
+ * معالج الأخطاء العام للمصادقة
+ */
+const handleAuthError = (error: any, res: Response): Response => {
+    return res.status(StatusCodes.UNAUTHORIZED).json({ 
+        success: false,
+        message: error.message || 'خطأ في المصادقة'
+    });
+};
+
+/**
+ * وسيط للتحقق من أن المستخدم مسجل الدخول
+ */
+export const isAuthenticated = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const token = req.header('Authorization')?.replace('Bearer ', '');
-
-        if (!token) {
-            throw new Error("Authentication required");
+        const decoded = extractAndVerifyToken(req);
+        
+        // التحقق من وجود المستخدم في قاعدة البيانات
+        const user = await UserModel.findOne({ id: decoded.id });
+        if (!user) {
+            throw new Error("المستخدم غير موجود");
         }
-        const decoded: any = jwt.verify(token!, process.env.JWT_SECRET || 'y#^o%ur!-@se^&cr!~%^et-ke$&y'); // Replace with your actual secret
-
-        if (decoded.role !== 'admin' && decoded.role !== 'superAdmin') {
-            throw new Error("Unauthorized: SuperAmain and admin can do it that");
-        }
-        req.user = { id: decoded.id };
+        
+        // إضافة معلومات المستخدم إلى الطلب
+        req.user = { 
+            id: decoded.id,
+            role: decoded.role
+        };
+        
         next();
     } catch (error: any) {
-        res.status(401).json({ message: error.message ?? 'Invalid token' });
+        handleAuthError(error, res);
     }
-}
+};
 
-export const checkAdminForDUProduct = async (req: Request, res: Response, next: NextFunction) => {
+/**
+ * وسيط للتحقق من أن المستخدم مسؤول أو مسؤول رئيسي
+ */
+export const isAdmin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const token = req.header('Authorization')?.replace('Bearer ', '');
-        const { productId } = req.body;
-        if (!token) {
-            throw new Error("Authentication required");
+        const decoded = extractAndVerifyToken(req);
+        
+        // التحقق من صلاحيات المستخدم
+        if (decoded.role !== 'admin' && decoded.role !== 'superAdmin') {
+            throw new Error("غير مصرح: فقط المسؤول والمسؤول الرئيسي يمكنهم القيام بهذا الإجراء");
         }
-        const decoded: any = jwt.verify(token!, process.env.JWT_SECRET || 'y#^o%ur!-@se^&cr!~%^et-ke$&y');
+        
+        // إضافة معلومات المستخدم إلى الطلب
+        req.user = { 
+            id: decoded.id,
+            role: decoded.role
+        };
+        
+        next();
+    } catch (error: any) {
+        handleAuthError(error, res);
+    }
+};
+
+/**
+ * وسيط للتحقق من صلاحيات تعديل وحذف المنتجات
+ */
+export const checkAdminForDUProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const decoded = extractAndVerifyToken(req);
+        
+        // الحصول على معرف المنتج من الطلب (إما من الجسم أو من المعلمات)
+        const productId = req.body.productId || req.params.productId;
+        
+        if (!productId) {
+            throw new Error("معرف المنتج مطلوب");
+        }
+        
+        // التحقق من وجود المنتج
         const product = await ProductModel.findOne({ id: productId });
         if (!product) {
-            throw new Error("Product not found");
+            throw new Error("المنتج غير موجود");
         }
-        if (
-            (decoded.role === 'admin' && product.createdBy !== decoded.id) ||
-            (decoded.role !== 'admin' && decoded.role !== 'superAdmin')) {
-            throw new Error("Unauthorized: You can only delete and update your own products");
+        
+        // التحقق من صلاحيات المستخدم
+        const isSuperAdmin = decoded.role === 'superAdmin';
+        const isProductOwner = decoded.role === 'admin' && product.createdBy === decoded.id;
+        
+        if (!isSuperAdmin && !isProductOwner) {
+            throw new Error("غير مصرح: يمكنك فقط تعديل وحذف المنتجات الخاصة بك");
         }
-        req.user = { id: decoded.userId };
+        
+        // إضافة معلومات المستخدم إلى الطلب
+        req.user = { 
+            id: decoded.id,
+            role: decoded.role
+        };
+        
         next();
     } catch (error: any) {
-        res.status(401).json({ message: error.message ?? 'Invalid token' });
+        handleAuthError(error, res);
     }
-}
+};
 
-export const checkAdminForDUCategory = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+/**
+ * وسيط للتحقق من صلاحيات تعديل وحذف الفئات
+ */
+export const checkAdminForDUCategory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const token = req.header('Authorization')?.replace('Bearer ', '');
-        const { categoryId } = req.body;
-        if (!token) {
-            throw new Error("Authentication required");
+        const decoded = extractAndVerifyToken(req);
+        
+        // الحصول على معرف الفئة من الطلب (إما من الجسم أو من المعلمات)
+        const categoryId = req.body.categoryId || req.params.categoryId;
+        
+        if (!categoryId) {
+            throw new Error("معرف الفئة مطلوب");
         }
-        const decoded: any = jwt.verify(token!, process.env.JWT_SECRET || 'y#^o%ur!-@se^&cr!~%^et-ke$&y');
+        
+        // التحقق من وجود الفئة
         const category = await CategoryModel.findOne({ id: categoryId });
         if (!category) {
-            throw new Error("category not found");
+            throw new Error("الفئة غير موجودة");
         }
-        if (
-            (decoded.role === 'admin' && category.createdBy !== decoded.id) ||
-            (decoded.role !== 'admin' && decoded.role !== 'superAdmin')) {
-            throw new Error("Unauthorized: You can only delete and update your own categories");
+        
+        // التحقق من صلاحيات المستخدم
+        const isSuperAdmin = decoded.role === 'superAdmin';
+        const isCategoryOwner = decoded.role === 'admin' && category.createdBy === decoded.id;
+        
+        if (!isSuperAdmin && !isCategoryOwner) {
+            throw new Error("غير مصرح: يمكنك فقط تعديل وحذف الفئات الخاصة بك");
         }
-        req.user = { id: decoded.userId };
+        
+        // إضافة معلومات المستخدم إلى الطلب
+        req.user = { 
+            id: decoded.id,
+            role: decoded.role
+        };
+        
         next();
     } catch (error: any) {
-        return res.status(401).json({ message: error.message ?? 'Invalid token' });
+        handleAuthError(error, res);
     }
-}
-
+};

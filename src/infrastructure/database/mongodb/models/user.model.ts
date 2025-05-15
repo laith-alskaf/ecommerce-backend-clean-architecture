@@ -1,4 +1,4 @@
-import mongoose, { Schema, Model, Document } from "mongoose"; // Erase if already required
+import mongoose, { Schema, Model, Document } from "mongoose"; 
 import { IUser } from "../../../../domain/entity/user";
 // import { v4 as uuidv4 } from "uuid";
 

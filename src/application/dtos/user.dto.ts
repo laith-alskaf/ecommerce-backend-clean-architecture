@@ -18,7 +18,7 @@ export interface ChangePasswordDTO {
 export interface ForgotPasswordDTO {
     email: string
 }
-export interface verifyEmailDTO {
+export interface VerifyEmailDTO {
     code: string
 }
 

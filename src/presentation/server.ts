@@ -3,6 +3,7 @@ import express, { Express } from "express";
 import { CONFIG } from "./config/env";
 import authRoutes from './routes/auth.route';
 import { setupDependencies } from './dependencies';
+import productRouters from './routes/product.route';
 
 
 export default class Server {
@@ -22,6 +23,7 @@ export default class Server {
 
     private setupRoutes() {
         this.app.use('/api/auth', authRoutes(this.container.authController));
+        this.app.use('/api/product', productRouters(this.container.productController));
 
     }
 

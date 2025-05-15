@@ -1,13 +1,29 @@
-export interface IProduct{
-  id: string;
+import { ProductInfoDTO } from "../../application/dtos/product.dto";
+
+export interface IProduct {
+  _id: string;
   title: string;
   description: string;
   price: number;
   categoryId: string;
-  images: string;
+  images: [type: string] | null;
   stockQuantity: number;
-  rating: { rate: number, count: number };
-  createdBy:string
+  rating: { rate: number, count: number } | null;
+  createdBy: string
   createdAt: Date;
   updatedAt: Date;
+
+}
+
+export class ProductMapper {
+  static toDTO(product: IProduct): ProductInfoDTO {
+    return {
+      title: product.title,
+      stockQuantity: product.stockQuantity,
+      description: product.description,
+      price: product.price,
+      categoryId: product.categoryId,
+      images: product.images || null,
+    };
+  }
 }

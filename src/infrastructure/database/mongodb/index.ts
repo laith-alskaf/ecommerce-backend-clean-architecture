@@ -1,5 +1,4 @@
 import { connect } from 'mongoose';
-import mongoose from "mongoose";
 import { CONFIG } from "../../../presentation/config/env";
 
 export default class Database {
@@ -23,7 +22,7 @@ export default class Database {
 
         console.log(`New connection to MongoDB`);
         try {
-            await mongoose.connect(CONFIG.DEV_MONGODB_URI!);
+            await connect(CONFIG.DEV_MONGODB_URI!);
             this.isConnected = true;
 
             console.log("✅ Connected to MongoDB");

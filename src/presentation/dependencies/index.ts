@@ -9,15 +9,18 @@ import { UuidGeneratorService } from '../../infrastructure/srevices/uuid-generat
 
 // Repositories
 import { MongoUserRepository } from '../../infrastructure/repositories/mongo-user.repository';
+import { MongoProductRepository } from '../../infrastructure/repositories/product.repository';
 
 // Controllers Dependencies
 import { AuthDependencies } from './auth.dependencies';
+import { ProductDependencies } from './product.dependencies';
 
 
 export const setupDependencies = () => {
 
     // Repositories
     const userRepository = new MongoUserRepository();
+    const prodcutRepository = new MongoProductRepository();
 
 
     // Services
@@ -39,8 +42,15 @@ export const setupDependencies = () => {
         uuidGeneratorService: uuidGeneratorService,
     });
 
+    //2- Product
+    const productController = ProductDependencies({
+        productRepository: prodcutRepository,
+        uuidGeneratorService: uuidGeneratorService,
+    });
+
     return {
         userRepository,
-        authController
+        authController,
+        productController
     };
 };

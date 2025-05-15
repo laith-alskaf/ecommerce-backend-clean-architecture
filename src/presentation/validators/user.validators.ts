@@ -2,115 +2,170 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 import { UserModel } from '../../infrastructure/database/mongodb/models/user.model';
+import { StatusCodes } from '../config/constant';
 
+/**
+ * مخططات التحقق من صحة البيانات
+ */
+const schemas = {
+  signup: Joi.object({
+    userName: Joi.string().min(3).max(30).required().messages({
+      'string.min': 'اسم المستخدم يجب أن يكون على الأقل 3 أحرف',
+      'string.max': 'اسم المستخدم يجب أن لا يتجاوز 30 حرف',
+      'any.required': 'اسم المستخدم مطلوب'
+    }),
+    email: Joi.string().email().required().messages({
+      'string.email': 'يرجى إدخال بريد إلكتروني صحيح',
+      'any.required': 'البريد الإلكتروني مطلوب'
+    }),
+    password: Joi.string().min(6).required().messages({
+      'string.min': 'كلمة المرور يجب أن تكون على الأقل 6 أحرف',
+      'any.required': 'كلمة المرور مطلوبة'
+    }),
+    role: Joi.string().required().messages({
+      'any.required': 'الدور مطلوب'
+    }),
+  }),
 
-const signupSchema = Joi.object({
-  userName: Joi.string().min(3).max(30).required(),
-  email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(),
-  role: Joi.string().required(),
-});
+  login: Joi.object({
+    email: Joi.string().email().required().messages({
+      'string.email': 'يرجى إدخال بريد إلكتروني صحيح',
+      'any.required': 'البريد الإلكتروني مطلوب'
+    }),
+    password: Joi.string().required().messages({
+      'any.required': 'كلمة المرور مطلوبة'
+    })
+  }),
 
+  forgotPassword: Joi.object({
+    email: Joi.string().email().required().messages({
+      'string.email': 'يرجى إدخال بريد إلكتروني صحيح',
+      'any.required': 'البريد الإلكتروني مطلوب'
+    }),
+  }),
 
-const loginSchema = Joi.object({
-  email: Joi.string().email().required(),
-  password: Joi.string().required()
-});
-const ForgotPasswordSchema = Joi.object({
-  email: Joi.string().email().required(),
-});
+  verifyEmail: Joi.object({
+    code: Joi.string().required().messages({
+      'any.required': 'رمز التحقق مطلوب'
+    }),
+  }),
 
-const verifyEmailSchema = Joi.object({
-  code: Joi.string().required(),
-});
-const changePasswordSchema = Joi.object({
-  email: Joi.string().email().required(),
-  newPassword: Joi.string().required()
-});
+  changePassword: Joi.object({
+    email: Joi.string().email().required().messages({
+      'string.email': 'يرجى إدخال بريد إلكتروني صحيح',
+      'any.required': 'البريد الإلكتروني مطلوب'
+    }),
+    newPassword: Joi.string().min(6).required().messages({
+      'string.min': 'كلمة المرور الجديدة يجب أن تكون على الأقل 6 أحرف',
+      'any.required': 'كلمة المرور الجديدة مطلوبة'
+    })
+  }),
+};
 
+/**
+ * معالج الأخطاء العام للتحقق من صحة البيانات
+ */
+const handleValidationError = (error: any, res: Response, errorLocation: string): Response => {
+  console.log(`Error in ${errorLocation}:`, error);
+  return res.status(StatusCodes.BAD_REQUEST).json({ 
+    success: false, 
+    message: error.details ? error.details[0].message : "خطأ في التحقق من البيانات" 
+  });
+};
 
+/**
+ * معالج الأخطاء العام للخطأ في الخادم
+ */
+const handleServerError = (error: any, res: Response, errorLocation: string): Response => {
+  console.log(`Error in ${errorLocation}:`, error);
+  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ 
+    success: false, 
+    message: "خطأ في الخادم" 
+  });
+};
+
+/**
+ * التحقق من صحة بيانات التسجيل
+ */
 export const validateSignup = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const body = req.body;
-
-    const { error } = signupSchema.validate(req.body);
+    const { error } = schemas.signup.validate(req.body);
     if (error) {
-      console.log("Error in validateSignup", error);
-      return res.status(401).json({ success: false, message: "All fields are required" });
+      return handleValidationError(error, res, "validateSignup");
     }
-    if (body.role === "superAdmin") {
+
+    // التحقق من وجود مسؤول رئيسي واحد فقط
+    if (req.body.role === "superAdmin") {
       const existingSuperAdmin = await UserModel.findOne({ role: "superAdmin" });
       if (existingSuperAdmin) {
-        console.log("Error in existingSuperAdmin", error);
-        return res.status(403).json({
+        return res.status(StatusCodes.BAD_REQUEST).json({
           success: false,
-          message: "Super Admin already exists. Only one Super Admin is allowed."
+          message: "المسؤول الرئيسي موجود بالفعل. يُسمح بمسؤول رئيسي واحد فقط."
         });
       }
     }
     next();
   } catch (error) {
-    console.log("Error in validateSignup", error);
-    return res.status(500).json({ success: false, message: "Server error" });
+    return handleServerError(error, res, "validateSignup");
   }
-}
+};
 
-
+/**
+ * التحقق من صحة بيانات تسجيل الدخول
+ */
 export const validateLogin = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const { error } = loginSchema.validate(req.body);
+    const { error } = schemas.login.validate(req.body);
     if (error) {
-      return res.status(400).json({ message: error.details[0].message });
+      return handleValidationError(error, res, "validateLogin");
     }
     next();
   } catch (error) {
-    console.log("Error in validateLogin", error);
-    return res.status(500).json({ success: false, message: "Server error" });
+    return handleServerError(error, res, "validateLogin");
   }
+};
 
-}
-
+/**
+ * التحقق من صحة بيانات نسيان كلمة المرور
+ */
 export const validateForgotPass = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
-
-    const { error } = ForgotPasswordSchema.validate(req.body);
-
+    const { error } = schemas.forgotPassword.validate(req.body);
     if (error) {
-      return res.status(400).json({ message: error.details[0].message });
+      return handleValidationError(error, res, "validateForgotPass");
     }
     next();
   } catch (error) {
-    console.log("Error in validateForgotPass", error);
-    return res.status(500).json({ success: false, message: "Server error" });
+    return handleServerError(error, res, "validateForgotPass");
   }
+};
 
-}
-
+/**
+ * التحقق من صحة بيانات التحقق من البريد الإلكتروني
+ */
 export const validateVerifyEmail = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const { error } = verifyEmailSchema.validate(req.body);
+    const { error } = schemas.verifyEmail.validate(req.body);
     if (error) {
-      return res.status(400).json({ message: error.details[0].message });
+      return handleValidationError(error, res, "validateVerifyEmail");
     }
     next();
   } catch (error) {
-    console.log("Error in validateVerifyEmail", error);
-    return res.status(500).json({ success: false, message: "Server error" });
+    return handleServerError(error, res, "validateVerifyEmail");
   }
+};
 
-}
-
+/**
+ * التحقق من صحة بيانات تغيير كلمة المرور
+ */
 export const validateChangePassword = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const { error } = changePasswordSchema.validate(req.body);
+    const { error } = schemas.changePassword.validate(req.body);
     if (error) {
-      return res.status(400).json({ message: error.details[0].message });
+      return handleValidationError(error, res, "validateChangePassword");
     }
     next();
   } catch (error) {
-    console.log("Error in validateVerifyEmail", error);
-    return res.status(500).json({ success: false, message: "Server error" });
+    return handleServerError(error, res, "validateChangePassword");
   }
-
-}
-
+};
