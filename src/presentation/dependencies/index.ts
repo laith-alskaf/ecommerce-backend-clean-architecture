@@ -58,6 +58,7 @@ export const setupDependencies = () => {
     });
 
     return {
+        tokenService,
         userRepository,
         authController,
         productController,

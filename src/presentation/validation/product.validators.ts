@@ -23,14 +23,13 @@ export const validateProductId = createValidationMiddleware({
 
 export const validateUpdateProduct = createValidationMiddleware({
   schema: updateProductSchema,
-  dataSource: 'composite',
-  useAsync: true
+  dataSource: 'body',
+  useAsync:true
 });
 
 export const validatePaginationProduct = createValidationMiddleware({
   schema: paginationSchema,
-  dataSource: 'query',
-  useAsync: true
+  dataSource: 'query'
 });
 
 export const validateSearchProduct = createValidationMiddleware({
@@ -41,7 +40,7 @@ export const validateSearchProduct = createValidationMiddleware({
 
 export const validateGetProductByCategoryId = createValidationMiddleware({
   schema: categoryIdSchema,
-  dataSource: 'query',
+  dataSource: 'params',
   useAsync: true
 });
 

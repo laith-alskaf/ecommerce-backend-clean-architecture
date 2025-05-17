@@ -82,8 +82,7 @@ export class ProductController {
 
     async updateProduct(req: Request, res: Response): Promise<void> {
         try {
-            const { productId } = req.params;
-            const { product } = req.body;
+            const { product, productId } = req.body;
             const updateProductDTO: UpdateProductDTO = {
                 productId,
                 product,
@@ -140,14 +139,14 @@ export class ProductController {
 
     async searchProducts(req: Request, res: Response): Promise<void> {
         try {
-            const { title = '', categoryId = '', page = 1, limit = 10, createdId } = req.query;
+            const { title = '', categoryId = null, page = 1, limit = 10, createdId = null } = req.query;
             const searchProductDTO: SearchProductDTO = {
                 title: title as string,
-                categoryId: categoryId as string,
+                categoryId: categoryId as string ,
                 createdId: createdId as string,
                 peginationProduct: {
-                    page: parseInt(page as string),
-                    limit: parseInt(limit as string),
+                    page: parseInt(page as string) || 1,
+                    limit: parseInt(limit as string) || 10,
                 }
             }
             const prodcuts = await this.searchProductsUseCase.execute(searchProductDTO);
@@ -155,7 +154,7 @@ export class ProductController {
                 res: res, statusCode: StatusCodes.OK,
                 message: Messages.PRODUCT.GET_ALL_SUCCESS_EN,
                 body: {
-                    product: prodcuts
+                    ...prodcuts
                 }
             });
 

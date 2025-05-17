@@ -9,10 +9,10 @@ export class SearchProductsUseCase {
     execute = async (searchProductDTO: SearchProductDTO): Promise<{ productData: ProductInfoDTO[] | null, total: number }> => {
         const filter: any = {};
         filter.title = { $regex: searchProductDTO.title, $options: 'i' };
-        if (searchProductDTO.categoryId) {
+        if (searchProductDTO.categoryId != null) {
             filter.categoryId = searchProductDTO.categoryId;
         }
-        if (searchProductDTO.createdId) {
+        if (searchProductDTO.createdId != null) {
             filter.createdBy = searchProductDTO.createdId;
         }
         const result = await this.productRepository.allProduct(

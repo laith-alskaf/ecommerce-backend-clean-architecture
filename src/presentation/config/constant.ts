@@ -23,15 +23,16 @@ export const StatusCodes = {
     SERVICE_UNAVAILABLE: 503    // الخدمة غير متوفرة
 };
 
-/**
- * رسائل التطبيق المستخدمة في الواجهات
- */
+
 export const Messages = {
     AUTH,
     USER,
     PRODUCT,
     CATEGORY,
     GENERAL: {
+        INVALID_PARAMETERS: "بيانات الإدخال غير صالحة",
+        INVALID_PARAMETERS_EN: "Invalid input parameters",
+
         INTERNAL_ERROR: "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى لاحقاً.",
         INTERNAL_ERROR_EN: "An unexpected error occurred. Please try again later.",
 
@@ -46,29 +47,30 @@ export const Messages = {
     }
 };
 
-/**
- * أدوار المستخدمين في النظام
- */
 export const UserRoles = {
     SUPER_ADMIN: 'superAdmin',
     ADMIN: 'admin',
-    USER: 'user'
+    CUSTOMER: 'customer'
 };
 
-/**
- * أنواع الملفات المسموح بها للرفع
- */
+
 export const AllowedFileTypes = {
     IMAGES: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
     DOCUMENTS: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
 };
 
-/**
- * حدود وقيود النظام
- */
+
 export const Limits = {
     MAX_FILE_SIZE: 5 * 1024 * 1024, // 5 ميجابايت
     MAX_PRODUCTS_PER_PAGE: 50,
     DEFAULT_PAGE_SIZE: 10,
     PASSWORD_MIN_LENGTH: 6
 };
+
+export const excludedPathsForAuth = [
+    "/api/auth/register",
+    "/api/auth/login",
+    "/api/auth/verify-email",
+    "/api/auth/forgot-password",
+    "/api/auth/change-password",
+];

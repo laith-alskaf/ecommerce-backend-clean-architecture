@@ -1,30 +1,29 @@
 import { Router } from 'express';
 import { ProductController } from '../controllers/product.controller';
-import { validatePaginationProduct, validateProduct, validateProductId, validateSearchProduct, validateUpdateProduct } from '../validation/product.validators';
-import { checkAdminForDUProduct, isAdmin } from '../middleware/auth.middleware';
+import { validateGetProductByCategoryId, validatePaginationProduct, validateProduct, validateProductId, validateSearchProduct, validateUpdateProduct } from '../validation/product.validators';
+import { checkResourceOwnership } from '../middleware/resource-ownership.middleware';
+import { ProductModel } from '../../infrastructure/database/mongodb/models/product.model';
 
 
 const productRoutes = (productController: ProductController): Router => {
-
+    const idKey = 'productId';
     const router = Router()
-    // router.post("/create", isAdmin, upload.single("image"), validateProduct, productController.createProduct.bind(productController));
+    // router.post("/create", upload.single("image"), validateProduct, productController.createProduct.bind(productController));
     router.get("/", validatePaginationProduct, productController.getAllProducts.bind(productController));
 
-    router.post("/create", isAdmin, validateProduct, productController.createProduct.bind(productController));
+    router.post("/create", validateProduct, productController.createProduct.bind(productController));
 
     router.get("/search", validateSearchProduct, productController.searchProducts.bind(productController));
 
-    router.get("/mine", isAdmin, productController.getProductsByUserId.bind(productController));
+    router.get("/mine", productController.getProductsByUserId.bind(productController));
 
-    router.delete("/delete", checkAdminForDUProduct,validateProductId, productController.deleteProduct.bind(productController));
+    router.delete("/delete", validateProductId, checkResourceOwnership(ProductModel, idKey), productController.deleteProduct.bind(productController));
 
-    router.get("/byCategoryId/:categoryId", productController.getProductsByCategoryId.bind(productController));
+    router.get("/byCategoryId/:categoryId", validateGetProductByCategoryId, productController.getProductsByCategoryId.bind(productController));
 
-    router.post("/update/:productId", checkAdminForDUProduct, validateUpdateProduct, productController.updateProduct.bind(productController));
-    
+    router.put("/update", validateUpdateProduct, checkResourceOwnership(ProductModel, idKey), productController.updateProduct.bind(productController));
+
     router.get("/:productId", productController.getSingleProduct.bind(productController));
-
-
 
     return router;
 

@@ -5,6 +5,7 @@ import authRoutes from './routes/auth.route';
 import { setupDependencies } from './dependencies';
 import productRouters from './routes/product.route';
 import categoryRouters from './routes/category.route';
+import { authMiddleware } from './middleware/auth.middleware';
 
 
 export default class Server {
@@ -19,7 +20,8 @@ export default class Server {
         this.app.use(express.json());
         this.app.use(cookieParser());
         this.app.use(express.static("public"));
-        // this.app.use(authMiddleware(this.container.tokenService, this.container.userRepository))
+        this.app.use(express.urlencoded({ extended: true }));
+        this.app.use(authMiddleware(this.container.tokenService, this.container.userRepository))
     }
 
     private setupRoutes() {

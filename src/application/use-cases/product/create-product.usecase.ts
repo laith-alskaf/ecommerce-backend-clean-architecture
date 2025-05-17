@@ -12,9 +12,7 @@ export class CreateProductUseCase {
             ...productDTO,
             _id: this.uuidGeneratorService.generate(),
         }
-        console.log('333333333333333');
         await this.productRepository.create(product);
-        // return createdProduct;
 
     }
 }

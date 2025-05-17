@@ -18,17 +18,15 @@ export const createValidationMiddleware = ({
 }: ValidationConfig) => {
     return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            console.log(dataSource);
+     
             const data = dataSource === 'composite'
                 ? { ...req.params, ...req.body }
                 : req[dataSource];
-            console.log(data);
             if (useAsync) {
                 await validateAsync(data, schema);
             } else {
                 validateSync(data, schema);
             }
-            console.log('11111111111111111111');
             next();
         } catch (error: any) {
             ResponseHandling.handleResponse({
