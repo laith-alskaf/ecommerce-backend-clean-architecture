@@ -52,9 +52,9 @@ export class ProductController {
 
     async createProduct(req: Request, res: Response): Promise<void> {
         try {
-            const product: CreateProductDTO = req.body;
-            product.createdBy = req.user.id,
-                await this.createProductUseCase.execute(product);
+            const createProductDTO: Partial<CreateProductDTO> = req.body;
+            createProductDTO.createdBy = req.user.id,
+                await this.createProductUseCase.execute(createProductDTO);
             ResponseHandling.handleResponse({
                 res: res, statusCode: StatusCodes.CREATED,
                 message: Messages.PRODUCT.CREATE_SUCCESS_EN,
@@ -66,7 +66,9 @@ export class ProductController {
 
     async deleteProduct(req: Request, res: Response): Promise<void> {
         try {
-            const deleteProductDTO: DeleteProductDTO = req.body;
+            const { productId } = req.body;
+            console.log(productId);
+            const deleteProductDTO: DeleteProductDTO = { productId: productId };
             await this.deleteProductUseCase.execute(deleteProductDTO);
             ResponseHandling.handleResponse({
                 res: res, statusCode: StatusCodes.OK,
@@ -80,7 +82,8 @@ export class ProductController {
 
     async updateProduct(req: Request, res: Response): Promise<void> {
         try {
-            const { product, productId } = req.body;
+            const { productId } = req.params;
+            const { product } = req.body;
             const updateProductDTO: UpdateProductDTO = {
                 productId,
                 product,

@@ -22,7 +22,7 @@ const schemas = {
       'string.min': 'كلمة المرور يجب أن تكون على الأقل 6 أحرف',
       'any.required': 'كلمة المرور مطلوبة'
     }),
-    role: Joi.string().required().messages({
+    role: Joi.string().valid('superAdmin', 'admin', 'customer').required().messages({
       'any.required': 'الدور مطلوب'
     }),
   }),

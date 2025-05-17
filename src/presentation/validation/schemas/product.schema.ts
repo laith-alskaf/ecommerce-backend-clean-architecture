@@ -26,7 +26,7 @@ export const productSchema = Joi.object({
     categoryId: Joi.string()
         .required()
         .external(async (value) => {
-            const category = await CategoryModel.findById(value);
+            const category = await CategoryModel.find({ _d: value });
             if (!category) {
                 throw new Error(Messages.CATEGORY.NOT_FOUND_EN);
             }
@@ -60,4 +60,19 @@ export const searchProductSchema = paginationSchema.keys({
         }
         return value;
     })
+});
+export const updateProductSchema = productIdSchema.keys({
+    product: productSchema.required().messages({
+        'object.base': Messages.PRODUCT.VALIDATION.GENERAL_VALIDATION.PRODUCT_DATA_REQUIRED_EN,
+        'any.required': Messages.PRODUCT.VALIDATION.GENERAL_VALIDATION.PRODUCT_DATA_REQUIRED_EN,
+    })
+});
+
+export const categoryIdSchema = Joi.object({
+    categoryId: Joi.string()
+        .required()
+        .messages({
+            'string.empty': Messages.PRODUCT.VALIDATION.PRODUCT_VALIDATION.CATEGORY_REQUIRED_EN,
+            'any.required': Messages.PRODUCT.VALIDATION.PRODUCT_VALIDATION.CATEGORY_REQUIRED_EN
+        })
 });

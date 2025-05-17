@@ -9,8 +9,9 @@ export class MongoCategoryRepository implements CategoryRepository {
         return await CategoryModel.find({});
     }
 
-    async create(category: ICategory): Promise<void> {
-        await CategoryModel.create(category);
+    async create(category: Partial<ICategory>): Promise<void> {
+        const newCategory = new CategoryModel(category);
+        await newCategory.save();
     }
 
     async delete(id: string): Promise<void> {

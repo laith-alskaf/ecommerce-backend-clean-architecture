@@ -18,7 +18,6 @@ export class GetAllProductsUseCase {
         const { products, total } = result;
 
         const productData: ProductInfoDTO[] = products.map(ProductMapper.toDTO);
-
         return { productData, total };
 
     }

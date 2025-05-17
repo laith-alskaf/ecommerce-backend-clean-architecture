@@ -1,6 +1,5 @@
 import { MongoCategoryRepository } from '../../infrastructure/repositories/category.repository';
 import { CategoryController } from '../controllers/category.controller';
-import { JwtTokenService } from '../../infrastructure/srevices/jwt-token.service';
 
 import {
     GetAllCategoriesUseCase,
@@ -9,16 +8,17 @@ import {
     GetCategoryByIdUseCase,
     UpdateCategoryUseCase,
 } from '../../application/use-cases/category';
+import { UuidGeneratorService } from '../../infrastructure/srevices/uuid-generator.service';
 
 
 
 interface CategoryDependenciesType {
-    tokenService: JwtTokenService;
+    uuidGeneratorService: UuidGeneratorService
     categoryRepository: MongoCategoryRepository;
 }
 
 export const CategoryDependencies = ({
-    tokenService,
+    uuidGeneratorService,
     categoryRepository
 }: CategoryDependenciesType): CategoryController => {
 
@@ -26,7 +26,7 @@ export const CategoryDependencies = ({
     const getAllCategoriesUseCase = new GetAllCategoriesUseCase(categoryRepository);
     const updateCategoryUseCase = new UpdateCategoryUseCase(categoryRepository);
     const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository);
-    const createCategoryUseCase = new CreateCategoryUseCase(categoryRepository, tokenService);
+    const createCategoryUseCase = new CreateCategoryUseCase(categoryRepository, uuidGeneratorService);
     const getCategoryByIdUseCase = new GetCategoryByIdUseCase(categoryRepository);
 
     const categoryController: CategoryController = new CategoryController(

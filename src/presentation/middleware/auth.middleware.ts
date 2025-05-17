@@ -5,9 +5,7 @@ import { UserModel } from '../../infrastructure/database/mongodb/models/user.mod
 import { ProductModel } from '../../infrastructure/database/mongodb/models/product.model';
 import { CategoryModel } from '../../infrastructure/database/mongodb/models/category.model';
 
-/**
- * توسيع واجهة الطلب لإضافة معلومات المستخدم
- */
+
 declare global {
     namespace Express {
         interface Request {
@@ -19,18 +17,14 @@ declare global {
     }
 }
 
-/**
- * واجهة للبيانات المشفرة في التوكن
- */
+
 interface DecodedToken {
     id: string;
     role?: string;
     [key: string]: any;
 }
 
-/**
- * الحصول على مفتاح JWT من متغيرات البيئة
- */
+
 const getJwtSecret = (): string => {
     const secret = process.env.JWT_SECRET;
     if (!secret) {
@@ -40,9 +34,7 @@ const getJwtSecret = (): string => {
     return secret;
 };
 
-/**
- * استخراج وفك تشفير التوكن من الطلب
- */
+
 const extractAndVerifyToken = (req: Request): DecodedToken => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
@@ -58,9 +50,7 @@ const extractAndVerifyToken = (req: Request): DecodedToken => {
     }
 };
 
-/**
- * معالج الأخطاء العام للمصادقة
- */
+
 const handleAuthError = (error: any, res: Response): Response => {
     return res.status(StatusCodes.UNAUTHORIZED).json({
         success: false,
@@ -68,20 +58,16 @@ const handleAuthError = (error: any, res: Response): Response => {
     });
 };
 
-/**
- * وسيط للتحقق من أن المستخدم مسجل الدخول
- */
+
 export const isAuthenticated = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const decoded = extractAndVerifyToken(req);
 
-        // التحقق من وجود المستخدم في قاعدة البيانات
-        const user = await UserModel.findOne({ id: decoded.id });
+        const user = await UserModel.findById(decoded.id);
         if (!user) {
             throw new Error(Messages.USER.USER_NOT_FOUND_EN);
         }
 
-        // إضافة معلومات المستخدم إلى الطلب
         req.user = {
             id: decoded.id,
             role: decoded.role
@@ -93,19 +79,15 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
     }
 };
 
-/**
- * وسيط للتحقق من أن المستخدم مسؤول أو مسؤول رئيسي
- */
+
 export const isAdmin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const decoded = extractAndVerifyToken(req);
 
-        // التحقق من صلاحيات المستخدم
         if (decoded.role !== 'admin' && decoded.role !== 'superAdmin') {
             throw new Error(Messages.USER.UNAUTHORIZED_ACTION_EN);
         }
 
-        // إضافة معلومات المستخدم إلى الطلب
         req.user = {
             id: decoded.id,
             role: decoded.role
@@ -117,27 +99,21 @@ export const isAdmin = async (req: Request, res: Response, next: NextFunction): 
     }
 };
 
-/**
- * وسيط للتحقق من صلاحيات تعديل وحذف المنتجات
- */
+
 export const checkAdminForDUProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const decoded = extractAndVerifyToken(req);
 
-        // الحصول على معرف المنتج من الطلب (إما من الجسم أو من المعلمات)
-        const productId = req.body.productId || req.params.productId;
+        const productId = req.body.productId;
 
         if (!productId) {
             throw new Error(Messages.PRODUCT.VALIDATION.GENERAL_VALIDATION.PRODUCT_ID_REQUIRED_EN);
         }
 
-        // التحقق من وجود المنتج
-        const product = await ProductModel.findOne({ _id: productId });
+        const product = await ProductModel.findById(productId);
         if (!product) {
             throw new Error(Messages.PRODUCT.NOT_FOUND_EN);
         }
-
-        // التحقق من صلاحيات المستخدم
         const isSuperAdmin = decoded.role === 'superAdmin';
         const isProductOwner = decoded.role === 'admin' && product.createdBy === decoded.id;
 
@@ -145,7 +121,7 @@ export const checkAdminForDUProduct = async (req: Request, res: Response, next: 
             throw new Error(Messages.USER.UNAUTHORIZED_ACTION_EN);
         }
 
-        // إضافة معلومات المستخدم إلى الطلب
+
         req.user = {
             id: decoded.id,
             role: decoded.role
@@ -157,35 +133,30 @@ export const checkAdminForDUProduct = async (req: Request, res: Response, next: 
     }
 };
 
-/**
- * وسيط للتحقق من صلاحيات تعديل وحذف الفئات
- */
+
 export const checkAdminForDUCategory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const decoded = extractAndVerifyToken(req);
 
-        // الحصول على معرف الفئة من الطلب (إما من الجسم أو من المعلمات)
         const categoryId = req.body.categoryId || req.params.categoryId;
 
         if (!categoryId) {
-            throw new Error("معرف الفئة مطلوب");
+            throw new Error(Messages.CATEGORY.VALIDATION.CATEGORY_ID_REQUIRED_EN);
         }
 
-        // التحقق من وجود الفئة
-        const category = await CategoryModel.findOne({ id: categoryId });
+
+        const category = await CategoryModel.findById(categoryId);
         if (!category) {
-            throw new Error("الفئة غير موجودة");
+            throw new Error(Messages.CATEGORY.NOT_FOUND_EN);
         }
 
-        // التحقق من صلاحيات المستخدم
         const isSuperAdmin = decoded.role === 'superAdmin';
         const isCategoryOwner = decoded.role === 'admin' && category.createdBy === decoded.id;
 
         if (!isSuperAdmin && !isCategoryOwner) {
-            throw new Error("غير مصرح: يمكنك فقط تعديل وحذف الفئات الخاصة بك");
+            throw new Error(Messages.USER.UNAUTHORIZED_ACTION_EN);
         }
 
-        // إضافة معلومات المستخدم إلى الطلب
         req.user = {
             id: decoded.id,
             role: decoded.role
@@ -196,3 +167,44 @@ export const checkAdminForDUCategory = async (req: Request, res: Response, next:
         handleAuthError(error, res);
     }
 };
+
+// export const auth = {
+//     required: async (req: Request, res: Response, next: NextFunction) => {
+//         try {
+//             const token = req.header('Authorization')?.split('Bearer ')[1];
+//             if (!token) throw new Error(Messages.AUTH.TOKEN_MISSING_EN);
+
+//             const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret') as { id: string; role?: string };
+//             const user = await UserModel.findById(decoded.id) || null;
+
+//             if (!user) throw new Error(Messages.USER.USER_NOT_FOUND_EN);
+//             req.user = { id: user.id, role: user.role };
+//             next();
+//         } catch (error: any) {
+//             res.status(StatusCodes.UNAUTHORIZED).json({ success: false, message: error.message });
+//         }
+//     },
+
+//     admin: (req: Request, res: Response, next: NextFunction) => {
+//         if (!['admin', 'superAdmin'].includes(req.user.role || '')) {
+//             return res.status(StatusCodes.FORBIDDEN).json({ success: false, message: Messages.AUTH.UNAUTHORIZED_ACCESS_EN });
+//         }
+//         next();
+//     },
+
+//     resourceOwner: (model: 'IProduct' | 'ICategory') => async (req: Request, res: Response, next: NextFunction) => {
+//         try {
+//             // const resourceId = req.params[`${model.toLowerCase()}Id`] || req.body.id;
+//             // const resource = await { IProduct: ProductModel, ICategory: CategoryModel }[model].findById(resourceId);
+
+//             // if (!resource) throw new Error(Messages[model.toUpperCase() as keyof typeof Messages].NOT_FOUND);
+//             if (req.user.role !== 'superAdmin' && resource.createdBy.toString() !== req.user.id) {
+//                 throw new Error(Messages.AUTH.UNAUTHORIZED_ACCESS);
+//             }
+
+//             next();
+//         } catch (error) {
+//             res.status(StatusCodes.FORBIDDEN).json({ success: false, message: error.message });
+//         }
+//     }
+// };

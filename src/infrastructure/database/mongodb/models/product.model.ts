@@ -15,10 +15,10 @@ const productSchema = new Schema<ProductDocument>({
         ref: 'Category',
         required: true,
         validate: {
-            validator: async (categoryId: string) => {
-                const category = await CategoryModel.findById(categoryId);
+            validator: async (_id: string) => {
+                const category = await CategoryModel.findById(_id);
                 return !!category;
-            },
+            },  
             message: 'Category does not exist'
         }
     },

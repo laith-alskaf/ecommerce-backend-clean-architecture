@@ -29,7 +29,7 @@ export class AuthController {
       ResponseHandling.handleResponse({
         res,
         statusCode: StatusCodes.CREATED,
-        message: Messages.AUTH.REGISTER_SUCCESS,
+        message: Messages.AUTH.REGISTER_SUCCESS_EN,
       });
     } catch (error: any) {
       ResponseHandling.handleResponse({
@@ -48,7 +48,7 @@ export class AuthController {
       ResponseHandling.handleResponse({
         res,
         statusCode: StatusCodes.OK,
-        message: Messages.AUTH.LOGIN_SUCCESS,
+        message: Messages.AUTH.LOGIN_SUCCESS_EN,
         body: {
           token,
           userInfo: {
@@ -73,7 +73,7 @@ export class AuthController {
     ResponseHandling.handleResponse({
       res,
       statusCode: StatusCodes.OK,
-      message: Messages.AUTH.LOGOUT_SUCCESS || "Logged out successfully"
+      message: Messages.AUTH.LOGOUT_SUCCESS_EN || "Logged out successfully"
     });
   }
 
@@ -85,7 +85,7 @@ export class AuthController {
       ResponseHandling.handleResponse({
         res,
         statusCode: StatusCodes.OK,
-        message: Messages.AUTH.FORGOT_PASSWORD_SUCCESS
+        message: Messages.AUTH.FORGOT_PASSWORD_SUCCESS_EN
       });
     } catch (error: any) {
       ResponseHandling.handleResponse({
@@ -123,7 +123,7 @@ export class AuthController {
       ResponseHandling.handleResponse({
         res,
         statusCode: StatusCodes.OK,
-        message: Messages.AUTH.RESET_PASSWORD_SUCCESS
+        message: Messages.AUTH.RESET_PASSWORD_SUCCESS_EN
       });
     } catch (error: any) {
       ResponseHandling.handleResponse({

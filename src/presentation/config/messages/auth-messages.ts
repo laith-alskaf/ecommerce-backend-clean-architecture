@@ -35,8 +35,14 @@ export const AUTH = {
     VERIFICATION_REQUIRED: "يرجى التحقق من بريدك الإلكتروني قبل تسجيل الدخول.",
     VERIFICATION_REQUIRED_EN: "Please verify your email before logging in.",
 
+    TOKEN_MISSING: 'مطلوب توكن المصادقة',
+    TOKEN_MISSING_EN: 'Authentication token required',
+
     INVALID_TOKEN: "رمز مميز غير صالح أو منتهي الصلاحية.",
     INVALID_TOKEN_EN: "Invalid or expired token.",
+
+    UNAUTHORIZED_ACCESS: 'غير مصرح بالوصول',
+    UNAUTHORIZED_ACCESS_EN: 'Unauthorized access',
 
     AUTHENTICATION_REQUIRED: "المصادقة مطلوبة.",
     AUTHENTICATION_REQUIRED_EN: "Authentication required."

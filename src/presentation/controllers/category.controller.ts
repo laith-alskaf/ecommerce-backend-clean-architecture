@@ -36,13 +36,12 @@ export class CategoryController {
 
     async createCategory(req: Request, res: Response): Promise<void> {
         try {
-            const createCategoryDTO: CreateCategoryDTO = req.body;
-            const token = req.header('Authorization')?.replace('Bearer ', '');
-            const createdcategory = await this.createCategoryUseCase.execute(token!, createCategoryDTO);
+            const createCategoryDTO: Partial<CreateCategoryDTO> = req.body;
+            createCategoryDTO.createdBy = req.user.id;
+            await this.createCategoryUseCase.execute(createCategoryDTO);
             ResponseHandling.handleResponse({
                 res: res, statusCode: StatusCodes.CREATED,
                 message: Messages.CATEGORY.CREATE_SUCCESS_EN,
-                body: { category: createdcategory }
             });
 
         } catch (error: any) {

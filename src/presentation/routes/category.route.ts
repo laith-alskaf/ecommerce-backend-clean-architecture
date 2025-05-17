@@ -1,14 +1,18 @@
 import { Router } from 'express';
 import { CategoryController } from '../controllers/category.controller';
-import { validateCategory, validateCategoryId, validateUpdateCategory } from '../validation/category.validators';
 import { checkAdminForDUCategory, isAdmin } from '../middleware/auth.middleware';
+import {
+    validateCategory,
+    validateCategoryId,
+    validateUpdateCategory
+} from '../validation/category.validators';
 
 
 const categoryRouters = (categoryController: CategoryController): Router => {
     const router = Router();
 
     router.get("/",
-        categoryController.getAllCategory
+        categoryController.getAllCategory.bind(categoryController),
     );
 
     router.post("/create",
@@ -17,7 +21,7 @@ const categoryRouters = (categoryController: CategoryController): Router => {
         categoryController.createCategory.bind(categoryController)
     );
 
-    router.post("/delete",
+    router.delete("/delete",
         validateCategoryId,
         checkAdminForDUCategory,
         categoryController.deleteCategory.bind(categoryController)

@@ -53,7 +53,7 @@ export const setupDependencies = () => {
 
     //3- Category
     const categoryController = CategoryDependencies({
-        tokenService: tokenService,
+        uuidGeneratorService: uuidGeneratorService,
         categoryRepository: categoryRepository
     });
 

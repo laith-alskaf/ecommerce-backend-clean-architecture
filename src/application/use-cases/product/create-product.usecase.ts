@@ -7,7 +7,7 @@ export class CreateProductUseCase {
         private readonly productRepository: ProductRepository,
         private readonly uuidGeneratorService: IdGeneratorService,
     ) { }
-    execute = async (productDTO: CreateProductDTO): Promise<void> => {
+    execute = async (productDTO: Partial<CreateProductDTO>): Promise<void> => {
         const product = {
             ...productDTO,
             _id: this.uuidGeneratorService.generate(),
