@@ -14,13 +14,6 @@ const productSchema = new Schema<ProductDocument>({
         type: String,
         ref: 'Category',
         required: true,
-        validate: {
-            validator: async (_id: string) => {
-                const category = await CategoryModel.findById(_id);
-                return !!category;
-            },  
-            message: 'Category does not exist'
-        }
     },
     images: [{
         type: String,
@@ -38,16 +31,13 @@ const productSchema = new Schema<ProductDocument>({
         },
         count: { type: Number, default: 0, min: 0 }
     },
-    createdBy: { type: String, required: true },
+    createdBy: {
+        type: String,
+        ref: 'Users',
+        required: true,
+    },
 }, {
     timestamps: true,
-
-    // toJSON: {
-    //     transform: (_, ret) => {
-    //         delete ret._id;
-    //         delete ret.__v;
-    //     }
-    // }
 });
 
 productSchema.index({ title: 'text' });

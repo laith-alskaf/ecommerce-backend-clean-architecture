@@ -4,7 +4,9 @@ import { IWishlist } from "../../../../domain/entity/wishlist";
 
 const wishlistSchema = new Schema<IWishlist>({
     userId: {
-        type: String, required: true, unique: true, index: true,
+        type: String,
+        ref: 'Users',
+        required: true,
     },
     productIds: [{ type: String, ref: 'Product', required: true, }],
 }, {

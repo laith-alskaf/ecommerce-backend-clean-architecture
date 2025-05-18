@@ -61,16 +61,31 @@ export const AllowedFileTypes = {
 
 
 export const Limits = {
-    MAX_FILE_SIZE: 5 * 1024 * 1024, // 5 ميجابايت
+    MAX_FILE_SIZE: 5 * 1024 * 1024,
     MAX_PRODUCTS_PER_PAGE: 50,
     DEFAULT_PAGE_SIZE: 10,
     PASSWORD_MIN_LENGTH: 6
 };
 
 export const excludedPathsForAuth = [
+    // Auth Routes
     "/api/auth/register",
     "/api/auth/login",
     "/api/auth/verify-email",
     "/api/auth/forgot-password",
     "/api/auth/change-password",
+
+    // Category Routes
+    "/api/category",
+    /^\/api\/category\/[a-fA-F0-9]{24}$/,
+
+    // Product Routes
+    "/api/product",
+    "/api/product/search",
+    /^\/api\/product\/byCategoryId\/[^/]+$/,
+    /^\/api\/product\/[a-fA-F0-9]{24}$/
+
 ];
+
+// /^\/api\/product\/[^/]+$/,
+//  /^\/api\/category\/[^/]+$/,

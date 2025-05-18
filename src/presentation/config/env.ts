@@ -6,6 +6,7 @@ export const CONFIG = {
     DEV_MONGODB_URI: process.env.MONGODB_URI!,
     PORT: process.env.PORT || 8080,
     CLIENT_URL: process.env.CLIENT_URL || "http://localhost:8080",
+    SERVER_URL: process.env.SERVER_URL || "http://localhost:8080",
     JWT_SECRET_ACCESS_TOKEN: process.env.JWT_SECRET || "",
     GMAIL_USER: process.env.GMAIL_USER,
     GMAIL_PASS: process.env.GMAIL_PASS,

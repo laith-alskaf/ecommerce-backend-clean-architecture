@@ -5,7 +5,7 @@ import { ResponseHandling } from '../../application/response/handleRespose';
 import {
   LoginUseCase,
   RegisterUseCase,
-  VerifiyEmailUseCase as VerifyEmailUseCase, // تصحيح الاسم هنا أيضاً
+  VerifiyEmailUseCase as VerifyEmailUseCase, 
   ChangePasswordUseCase,
   ForgotPasswordUseCase,
 } from "../../application/use-cases/auth";
@@ -17,7 +17,7 @@ export class AuthController {
     private readonly registerUseCase: RegisterUseCase,
     private readonly loginUseCase: LoginUseCase,
     private readonly forgotPasswordUseCase: ForgotPasswordUseCase,
-    private readonly verifyEmailUseCase: VerifyEmailUseCase, // تصحيح الاسم
+    private readonly verifyEmailUseCase: VerifyEmailUseCase, 
     private readonly changePasswordUseCase: ChangePasswordUseCase,
   ) { }
 

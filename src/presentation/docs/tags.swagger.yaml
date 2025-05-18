@@ -1,0 +1,8 @@
+tags:
+  - name: Auth
+    description: Authentication and authorization endpoints
+  - name: Category
+    description: Category management endpoints
+  - name: Product
+    description: Product management endpoints
+

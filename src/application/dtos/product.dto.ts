@@ -5,7 +5,7 @@ export interface CreateProductDTO {
     price: number,
     categoryId: string,
     createdBy: string,
-    images: [type: string] | null,
+  images: [type: string] | null;
 }
 
 
@@ -21,7 +21,7 @@ export interface ProductInfoDTO {
     description: string,
     price: number,
     categoryId: string,
-    images: [type: string] | null,
+   images: [type: string] | null;
 }
 export interface PeginationProductDTO {
     limit: number | 10,

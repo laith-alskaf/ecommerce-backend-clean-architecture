@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { CategoryController } from '../controllers/category.controller';
-// import { checkAdminForDUCategory, isAdmin } from '../middleware/auth.middleware';
 import {
     validateCategory,
     validateCategoryId,
@@ -17,18 +16,15 @@ const categoryRouters = (categoryController: CategoryController): Router => {
 
     router.post("/create",
         validateCategory,
-        // isAdmin,
         categoryController.createCategory.bind(categoryController)
     );
 
     router.delete("/delete",
         validateCategoryId,
-        // checkAdminForDUCategory,
         categoryController.deleteCategory.bind(categoryController)
     );
-    router.post("/update",
+    router.put("/update",
         validateUpdateCategory,
-        // checkAdminForDUCategory,
         categoryController.updateCategory.bind(categoryController)
     );
     router.get("/:categoryId",

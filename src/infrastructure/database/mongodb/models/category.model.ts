@@ -8,7 +8,11 @@ const categorySchema = new Schema<CategoryDocument>({
   _id: { type: String, default: () => crypto.randomUUID() },
   name: { type: String, required: true, unique: true },
   description: { type: String, maxlength: 500 },
-  createdBy: { type: String, required: true },
+  createdBy: {
+    type: String,
+    ref: 'Users',
+    required: true,
+  },
 }, {
   timestamps: true,
 

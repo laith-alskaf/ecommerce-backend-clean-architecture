@@ -25,11 +25,13 @@ export class MongoUserRepository implements UserRepository {
 
 
   update = async (userId: string, userData: Partial<IUser>): Promise<IUser | null> => {
-    return await UserModel.findByIdAndUpdate(userId , { $set: userData }, { new: true }).exec();
+    return await UserModel.findByIdAndUpdate(userId, { $set: userData }, { new: true }).exec();
   }
 
   delete = async (id: string): Promise<void> => {
-    await UserModel.findByIdAndDelete(id ).exec();
+    await UserModel.findByIdAndDelete(id).exec();
   }
-
+  findByRole = async (role: string): Promise<IUser | null> => {
+    return await UserModel.findOne({ role: role }).exec();
+  }
 }

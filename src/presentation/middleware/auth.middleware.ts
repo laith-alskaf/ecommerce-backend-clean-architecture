@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { excludedPathsForAuth, Messages, StatusCodes } from '../config/constant';
 import { UserRepository } from '../../domain/repository/user.repository';
 import { CONFIG } from '../config/env';
-import { BadRequestError, UnauthorizedError } from '../../application/errors/application-error';
 import { TokenService } from '../../domain/services/token.service';
 import { ResponseHandling } from '../../application/response/handleRespose';
 
@@ -26,6 +25,9 @@ export const authMiddleware = (tokenService: TokenService, userRepository: UserR
             if (typeof path === "string") {
                 return req.path === path;
             }
+            if (path instanceof RegExp) {
+                return path.test(req.path);
+            }
             return false;
         });
 
@@ -47,7 +49,6 @@ export const authMiddleware = (tokenService: TokenService, userRepository: UserR
             }
             else {
                 throw new Error(Messages.AUTH.INVALID_TOKEN_EN);
-
             }
 
         } catch (error: any) {

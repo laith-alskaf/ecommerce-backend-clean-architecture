@@ -5,7 +5,6 @@ async function main() {
     try {
         const server = new Server();
         const db = Database.getInstance();
-
         await db.connect();
 
         server.init();
@@ -18,5 +17,3 @@ async function main() {
 }
 
 main();
-
-//pass  laithalskaf   B6a0pzdGluwoOpsy

@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { Messages, StatusCodes, UserRoles } from '../config/constant';
 import { Model } from 'mongoose';
 import { ResponseHandling } from '../../application/response/handleRespose';
-import { ForbiddenError } from '../../application/errors/application-error';
 
 export interface IOwnership {
     createdBy: string;

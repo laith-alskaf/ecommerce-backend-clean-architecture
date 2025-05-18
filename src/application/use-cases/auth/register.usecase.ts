@@ -3,10 +3,10 @@ import { EncryptionService } from "../../../domain/services/encryption.service";
 import { IdGeneratorService } from "../../../domain/services/id-generator.service";
 import { MailService } from "../../../domain/services/mail.service";
 import { RandomStringGenerator } from "../../../domain/services/number-generateor.service";
-import { sendVerificationEmail } from "../../../presentation/utils/email/emails";
 import { RegisterDTO } from "../../dtos/user.dto";
 import { VERIFICATION_EMAIL_TEMPLATE } from "../../../domain/emails_template/verification_email_template";
 import { BadRequestError, ConflictRequestError } from "../../errors/application-error";
+import { UserRoles } from "../../../presentation/config/constant";
 
 export class RegisterUseCase {
     private otpCodeExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
@@ -19,13 +19,18 @@ export class RegisterUseCase {
     ) { }
     execute = async (registerData: RegisterDTO): Promise<void> => {
         const existingUser = await this.userRepository.findByEmail(registerData.email);
-
         if (existingUser) {
             if (!existingUser.isEmailVerified) {
                 throw new BadRequestError("Please Verify Your Email");
             }
             else {
                 throw new ConflictRequestError("User already exists");
+            }
+        }
+        if (registerData.role == UserRoles.SUPER_ADMIN) {
+            const existingSuperAdmin = await this.userRepository.findByEmail(UserRoles.SUPER_ADMIN);
+            if (existingSuperAdmin) {
+                throw new ConflictRequestError("SuperAdmin already exists");
             }
         }
         const hashedPassword = await this.encryptionService.hash(registerData.password);
