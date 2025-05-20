@@ -29,7 +29,7 @@ export const createValidationMiddleware = ({
             }
             next();
         } catch (error: any) {
-            ResponseHandling.handleResponse({
+            ResponseHandling.send({
                 res,
                 statusCode: StatusCodes.BAD_REQUEST,
                 message: error.message

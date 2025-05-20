@@ -7,10 +7,10 @@ import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger';
 import { corsOptions } from './config/corsOptions';
-import publicCategoryRouters from './routes/category.routes.ts/public-category.route';
 import categoryRouters from './routes/category.routes.ts/category.route';
 import productRouters from './routes/product.routes.ts/product.route';
 import publicProductRoutes from "./routes/product.routes.ts/public-product.route";
+import wishlistRoutes from "./routes/wishlist.route";
 
 export default class Server {
     private app: Express;
@@ -31,7 +31,7 @@ export default class Server {
         this.app.use('/api/user/product', productRouters(this.container.productController));
         this.app.use('/api/product', publicProductRoutes(this.container.productController));
         this.app.use('/api/user/category', categoryRouters(this.container.categoryController));
-        this.app.use('/api/category', publicCategoryRouters(this.container.categoryController));
+        this.app.use('/api/user/wishlist', wishlistRoutes(this.container.wishlistController));
     }
 
     public async run(): Promise<void> {

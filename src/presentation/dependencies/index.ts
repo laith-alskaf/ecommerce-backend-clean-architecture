@@ -16,6 +16,8 @@ import { MongoCategoryRepository } from '../../infrastructure/repositories/categ
 import { AuthDependencies } from './auth.dependencies';
 import { ProductDependencies } from './product.dependencies';
 import { CategoryDependencies } from './category.dependencies';
+import { WishlistDependencies } from './wishlist.dependencies';
+import { MongoWishlistRepository } from '../../infrastructure/repositories/wishlist.repository';
 
 
 export const setupDependencies = () => {
@@ -24,6 +26,7 @@ export const setupDependencies = () => {
     const userRepository = new MongoUserRepository();
     const prodcutRepository = new MongoProductRepository();
     const categoryRepository = new MongoCategoryRepository();
+    const wishlistRepository = new MongoWishlistRepository();
 
 
     // Services
@@ -57,11 +60,17 @@ export const setupDependencies = () => {
         categoryRepository: categoryRepository
     });
 
+      //3- Wishlist
+    const wishlistController = WishlistDependencies({
+        wishlistRepository: wishlistRepository
+    });
+
     return {
         tokenService,
         userRepository,
         authController,
         productController,
-        categoryController
+        categoryController,
+        wishlistController
     };
 };

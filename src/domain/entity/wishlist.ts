@@ -1,5 +1,5 @@
 export interface IWishlist {
-    userId: string;
-    productIds: string[];
-  }
-  
+  userId: string;
+  productsId: string[];
+}
+

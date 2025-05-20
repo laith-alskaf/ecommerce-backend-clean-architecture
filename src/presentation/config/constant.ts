@@ -2,6 +2,7 @@ import { AUTH } from "./messages/auth-messages";
 import { PRODUCT } from "./messages/product-messages";
 import { CATEGORY } from "./messages/category_messages";
 import { USER } from "./messages/user-messages";
+import { WISHLIST } from "./messages/wishlist.messages";
 
 
 export const StatusCodes = {
@@ -29,6 +30,7 @@ export const Messages = {
     USER,
     PRODUCT,
     CATEGORY,
+    WISHLIST,
     GENERAL: {
         INVALID_PARAMETERS: "بيانات الإدخال غير صالحة",
         INVALID_PARAMETERS_EN: "Invalid input parameters",

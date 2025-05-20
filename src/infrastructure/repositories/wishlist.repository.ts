@@ -1,31 +1,44 @@
 // src/repositories/user.repository.ts
 import { IWishlist } from '../../domain/entity/wishlist';
-import { wishlistModel } from '../database/mongodb/models/wishlist';
+import { WishlistRepository } from '../../domain/repository/wishlist.repository';
+import { WishlistModel } from '../database/mongodb/models/wishlist.model';
 
-export class WishlistRepository {
+export class MongoWishlistRepository implements WishlistRepository {
 
-    async getWishlistByUserId(userId: string): Promise<IWishlist | null> {
-        return await wishlistModel.findOne({ userId: userId });
+    async create(userId: string): Promise<IWishlist> {
+        const wishlist = new WishlistModel({
+            userId,
+            productsId: [],
+        });
+        await wishlist.save();
+        return wishlist;
     }
 
-    async addProduct(userId: string, productId: string): Promise<IWishlist | null> {
-        return await wishlistModel.findOneAndUpdate(
-            { userId :userId },
-            { $addToSet: { productIds: productId } },// addToSet لتجنّب التكرار
-            { new: true, upsert: true }// upsert لإنشاء الوثيقة إن لم تكن موجودة
+    async findById(userId: string): Promise<IWishlist | null> {
+        console.log(userId);
+        return await WishlistModel.findOne({ userId: userId }).populate('productsId');
+    }
+
+    async add(userId: string, productId: string): Promise<void> {
+        await WishlistModel.updateOne(
+            { userId },
+            { $addToSet: { productsId: productId } }
+        );
+
+    }
+
+    async removeProdut(userId: string, productId: string): Promise<void> {
+        await WishlistModel.updateOne(
+            { userId },
+            { $pull: { productsId: productId } }
         );
     }
 
-    async removeProduct(userId: string, productId: string): Promise<IWishlist | null> {
-        return await wishlistModel.findOneAndUpdate(
-            { userId: userId },
-            { $pull: { productIds: productId } },
-            { new: true }
+    async removeAllProdut(userId: string): Promise<void> {
+        await WishlistModel.updateOne(
+            { userId },
+            { $set: { productsId: [] } }
         );
-    }
-
-    async deleteWishlistByUserId(userId: string): Promise<IWishlist | null> {
-        return await wishlistModel.findOneAndDelete({ userId: userId });
     }
 
 

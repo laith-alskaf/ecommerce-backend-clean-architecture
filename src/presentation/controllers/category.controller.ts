@@ -23,14 +23,14 @@ export class CategoryController {
     async getAllCategory(_req: Request, res: Response): Promise<void> {
         try {
             const category = await this.getAllCategoriesUseCase.execute();
-            ResponseHandling.handleResponse({
+            ResponseHandling.send({
                 res: res, statusCode: StatusCodes.OK,
                 message: Messages.CATEGORY.GET_ALL_SUCCESS_EN,
                 body: { categories: category }
             });
 
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
         }
     }
 
@@ -39,13 +39,13 @@ export class CategoryController {
             const createCategoryDTO: Partial<CreateCategoryDTO> = req.body;
             createCategoryDTO.createdBy = req.user.id;
             await this.createCategoryUseCase.execute(createCategoryDTO);
-            ResponseHandling.handleResponse({
+            ResponseHandling.send({
                 res: res, statusCode: StatusCodes.CREATED,
                 message: Messages.CATEGORY.CREATE_SUCCESS_EN,
             });
 
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
         }
     }
 
@@ -53,13 +53,13 @@ export class CategoryController {
         try {
             const { categoryId } = req.params;
             await this.deleteCategoryUseCase.execute(categoryId);
-            ResponseHandling.handleResponse({
+            ResponseHandling.send({
                 res: res, statusCode: StatusCodes.OK,
                 message: Messages.CATEGORY.DELETE_SUCCESS_EN
             });
 
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
         }
     }
 
@@ -69,7 +69,7 @@ export class CategoryController {
             const updateCategoryDTO: Partial<UpdateCategoryDTO> = req.body.category;
             updateCategoryDTO.categoryId = categoryId;
             const updatedCategory = await this.updateCategoryUseCase.execute(updateCategoryDTO);
-            ResponseHandling.handleResponse({
+            ResponseHandling.send({
                 res: res, statusCode: StatusCodes.OK,
                 message: Messages.CATEGORY.UPDATE_SUCCESS_EN,
                 body: {
@@ -77,7 +77,7 @@ export class CategoryController {
                 }
             });
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
         }
     }
 
@@ -85,7 +85,7 @@ export class CategoryController {
         try {
             const { categoryId } = req.params;
             const category = await this.getCategoryByIdUseCase.execute(categoryId);
-            ResponseHandling.handleResponse({
+            ResponseHandling.send({
                 res: res, statusCode: StatusCodes.OK,
                 message: Messages.CATEGORY.GET_SUCCESS_EN,
                 body: {
@@ -94,7 +94,7 @@ export class CategoryController {
             });
 
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+            ResponseHandling.send({ res: res, statusCode: 400, message: error.message });
         }
     }
 

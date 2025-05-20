@@ -1,70 +1,73 @@
 import { Request, Response } from "express";
 import { ResponseHandling } from "../../application/response/handleRespose";
-import { WishlistService } from "../../application/use-cases/wishlist.service";
+import { AddProductToWishlistUseCase } from "../../application/use-cases/wishlist/add-product-to-wishlist.usecase";
+import { GetWishlistUseCase } from "../../application/use-cases/wishlist/get-wishlist.usecase";
+import { RemoveAllProductfromWishlistUseCase } from "../../application/use-cases/wishlist/remove-all-product-from-wishlist.usecase";
+import { RemoveProductFromWishlistUseCase } from "../../application/use-cases/wishlist/remove-product-from-wishlist.usecase";
+import { Messages, StatusCodes } from "../config/constant";
 
 export class WishlistController {
-    wishlistService: WishlistService;
 
-    constructor() {
-        this.wishlistService = new WishlistService();
-        this.addProdutcToWishlist = this.addProdutcToWishlist.bind(this);
-        this.removeProdutcFromWishlist = this.removeProdutcFromWishlist.bind(this);
-        this.getWishlist = this.getWishlist.bind(this);
-        this.deleteWishlist = this.deleteWishlist.bind(this);
-    }
+    constructor(
+        private readonly addProductToWishlistUseCase: AddProductToWishlistUseCase,
+        private readonly getWishlistUseCase: GetWishlistUseCase,
+        private readonly removeAllProductfromWishlistUseCase: RemoveAllProductfromWishlistUseCase,
+        private readonly removeProductFromWishlistUseCase: RemoveProductFromWishlistUseCase,
+    ) { }
 
     async getWishlist(req: Request, res: Response): Promise<void> {
         try {
-            const userId = req.user?.id;
-            const wishlist = await this.wishlistService.getWishlist(userId);
-            ResponseHandling.handleResponse({
-                res, statusCode: 200, message: "User wishlist", body: wishlist
+            const userId = req.user.id;
+            const wishlist = await this.getWishlistUseCase.execute(userId);
+            ResponseHandling.send({
+                res, statusCode: StatusCodes.OK, message: Messages.WISHLIST.GET_SUCCESS_EN, body: wishlist
             });
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
         }
 
     }
 
     async addProdutcToWishlist(req: Request, res: Response): Promise<void> {
         try {
-            const { productId } = req.body;
-            const userId = req.user?.id;
-            const updatedWishlist = await this.wishlistService.addToWishlist(userId, productId);
-            ResponseHandling.handleResponse({
-                res, statusCode: 200, message: "Product added to wishlist", body: updatedWishlist
+            const { productId } = req.params;
+            console.log(productId);
+            const userId = req.user.id;
+            await this.addProductToWishlistUseCase.execute(userId, productId);
+            ResponseHandling.send({
+                res, statusCode: StatusCodes.OK, message: Messages.WISHLIST.ADD_SUCCESS_EN,
             });
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
         }
 
     }
 
     async removeProdutcFromWishlist(req: Request, res: Response): Promise<void> {
         try {
-            const { productId } = req.body;
+            const { productId } = req.params;
             const userId = req.user?.id;
-            const updatedWishlist = await this.wishlistService.removeFromWishlist(userId, productId);
-            ResponseHandling.handleResponse({
-                res, statusCode: 200, message: "Product removed from wishlist", body: updatedWishlist
+            await this.removeProductFromWishlistUseCase.execute(userId, productId);
+            ResponseHandling.send({
+                res, statusCode: StatusCodes.OK, message: Messages.WISHLIST.REMOVE_SUCCESS_EN,
             });
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
 
         }
 
     }
 
 
-    async deleteWishlist(req: Request, res: Response): Promise<void> {
+    async removeAllProdutcFromWishlist(req: Request, res: Response): Promise<void> {
         try {
             const userId = req.user?.id;
-            await this.wishlistService.deleteWishlist(userId!);
-            ResponseHandling.handleResponse({
-                res, statusCode: 200, message: "Wishlist deleted successfully"
+            await this.removeAllProductfromWishlistUseCase.execute(userId!);
+            ResponseHandling.send({
+                res, statusCode: StatusCodes.OK, message: Messages.WISHLIST.CLEAR_SUCCESS_EN,
             });
         } catch (error: any) {
-            ResponseHandling.handleResponse({ res: res, statusCode: 400, message: error.message });
+            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
         }
 
     }

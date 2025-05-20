@@ -21,7 +21,6 @@ declare global {
 export const authMiddleware = (tokenService: TokenService, userRepository: UserRepository) => {
     return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
         try {
-            let path = req.path.replace(/\?.*$/, '').replace(/\/$/, '');
             const isExcluded = excludedPathsForAuth.some(path => {
                 if (typeof path === "string") {
                     return req.path === path;
@@ -35,7 +34,6 @@ export const authMiddleware = (tokenService: TokenService, userRepository: UserR
             if (isExcluded) {
                 return next();
             }
-
 
             const authHeader = req.header('Authorization')?.trim();
             if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -63,7 +61,7 @@ export const authMiddleware = (tokenService: TokenService, userRepository: UserR
             next();
         } catch (error: any) {
             const statusCode = error instanceof UnauthorizedError ? StatusCodes.UNAUTHORIZED : StatusCodes.FORBIDDEN;
-            return ResponseHandling.handleResponse({ res, statusCode, message: error.message });
+            return ResponseHandling.send({ res, statusCode, message: error.message });
         }
     };
 };

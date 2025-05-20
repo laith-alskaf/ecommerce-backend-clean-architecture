@@ -1,0 +1,41 @@
+paths:
+  /api/user/wishlist/:
+    get:
+      summary: Get user's wishlist
+      description: Retrieves the wishlist for the authenticated user, including details of all products in the wishlist.
+      tags: [Wishlist]
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Wishlist retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                status: success
+                message: Wishlist retrieved successfully.
+                body:
+                  $ref: "#/components/schemas/WishlistDTO"
+        "400":
+          description: Bad request (e.g., missing user ID)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                success: false
+                message: User ID is required.
+        "401":
+          description: Unauthorized (invalid or missing token)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                success: false
+                message: Unauthorized
+
+
+

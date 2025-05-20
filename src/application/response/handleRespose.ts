@@ -8,7 +8,7 @@ interface HandleResponse {
 }
 
 export class ResponseHandling {
-  static handleResponse({ res, message, statusCode, body }: HandleResponse) {
+  static send({ res, message, statusCode, body }: HandleResponse) {
     let defaultMessage = "An error occurred";
     switch (statusCode) {
       case 200:

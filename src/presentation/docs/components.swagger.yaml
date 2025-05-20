@@ -220,3 +220,13 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/CategoryInfoDTO"
+  WishlistDTO:
+    type: object
+    required:
+      - products
+    properties:
+      products:
+        type: array
+        items:
+          $ref: "#/components/schemas/ProductInfoDTO"
+        description: List of products in the wishlist

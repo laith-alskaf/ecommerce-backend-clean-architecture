@@ -1,16 +1,22 @@
-import express from 'express';
+import { Router } from 'express';
 import { WishlistController } from '../controllers/wishlist.controller';
-import { validateAddAndRemoveProduct } from '../validation/wishlist.validators';
-
-const WishlistRouters = express.Router();
-const wishlistController = new WishlistController();
-
-WishlistRouters.get("/", wishlistController.getWishlist);
-WishlistRouters.post("/add-product", validateAddAndRemoveProduct, wishlistController.addProdutcToWishlist);
-WishlistRouters.post("/remove-product", validateAddAndRemoveProduct, wishlistController.removeProdutcFromWishlist);
-WishlistRouters.post("/delete", wishlistController.deleteWishlist);
+import { validateWishlistProductId } from '../validation/wishlist.validators';
+import { wishlistProductIdMiddleware } from '../middleware/wishlist.middleware';
 
 
+const wishlistRoutes = (wishlistController: WishlistController): Router => {
+    const router = Router();
+
+    router.get("/", wishlistController.getWishlist.bind(wishlistController));
+
+    router.post("/add-product/:productId", validateWishlistProductId, wishlistProductIdMiddleware(true), wishlistController.addProdutcToWishlist.bind(wishlistController));
+    
+    router.delete("/product/:productId", validateWishlistProductId, wishlistProductIdMiddleware(false), wishlistController.removeProdutcFromWishlist.bind(wishlistController));
+    
+    router.delete("/all-product", wishlistController.removeAllProdutcFromWishlist.bind(wishlistController));
+    
+    return router;
+}
 
 
-export default WishlistRouters;
+export default wishlistRoutes;
