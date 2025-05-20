@@ -1,4 +1,4 @@
-path:
+paths:
   /api/user/wishlist/add-product/{productId}:
     post:
       summary: Add a product to wishlist

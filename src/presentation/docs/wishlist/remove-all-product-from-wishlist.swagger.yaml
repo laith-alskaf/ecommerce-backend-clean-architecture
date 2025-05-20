@@ -1,4 +1,4 @@
-path:
+paths:
   /api/user/wishlist/all-product:
     delete:
       summary: Clear all products from wishlist
