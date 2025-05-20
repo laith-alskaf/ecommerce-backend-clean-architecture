@@ -66,26 +66,3 @@ export const Limits = {
     DEFAULT_PAGE_SIZE: 10,
     PASSWORD_MIN_LENGTH: 6
 };
-
-export const excludedPathsForAuth = [
-    // Auth Routes
-    "/api/auth/register",
-    "/api/auth/login",
-    "/api/auth/verify-email",
-    "/api/auth/forgot-password",
-    "/api/auth/change-password",
-
-    // Category Routes
-    "/api/category",
-    /^\/api\/category\/[a-fA-F0-9]{24}$/,
-
-    // Product Routes
-    "/api/product",
-    "/api/product/search",
-    /^\/api\/product\/byCategoryId\/[^/]+$/,
-    /^\/api\/product\/[a-fA-F0-9]{24}$/
-
-];
-
-// /^\/api\/product\/[^/]+$/,
-//  /^\/api\/category\/[^/]+$/,

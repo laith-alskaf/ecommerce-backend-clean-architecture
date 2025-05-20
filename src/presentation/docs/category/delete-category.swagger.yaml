@@ -1,16 +1,16 @@
 paths:
-  /api/category/delete:
+  /api/user/category/{categoryId}:
     delete:
       summary: Delete a category
       tags: [Category]
       security:
         - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/DeleteCategoryDTO"
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Category deleted successfully

@@ -135,25 +135,6 @@ components:
             type: string
           nullable: true
 
-    UpdateProductDTO:
-      type: object
-      required:
-        - productId
-        - product
-      properties:
-        productId:
-          type: string
-        product:
-          $ref: "#/components/schemas/CreateProductDTO"
-
-    DeleteProductDTO:
-      type: object
-      required:
-        - productId
-      properties:
-        productId:
-          type: string
-
     PeginationProductDTO:
       type: object
       properties:
@@ -209,25 +190,6 @@ components:
         name:
           type: string
         description:
-          type: string
-
-    UpdateCategoryDTO:
-      type: object
-      required:
-        - categoryId
-        - category
-      properties:
-        categoryId:
-          type: string
-        category:
-          $ref: "#/components/schemas/CreateCategoryDTO"
-
-    DeleteCategoryDTO:
-      type: object
-      required:
-        - categoryId
-      properties:
-        categoryId:
           type: string
 
     CategoryInfoDTO:

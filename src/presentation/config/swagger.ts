@@ -11,7 +11,7 @@ const options = {
     },
     servers: [
       {
-        url: `${CONFIG.CLIENT_URL}`,
+        url: `${CONFIG.SERVER_URL}`,
         description: 'Development Server',
       },
 

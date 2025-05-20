@@ -51,7 +51,7 @@ export class CategoryController {
 
     async deleteCategory(req: Request, res: Response): Promise<void> {
         try {
-            const { categoryId } = req.body;
+            const { categoryId } = req.params;
             await this.deleteCategoryUseCase.execute(categoryId);
             ResponseHandling.handleResponse({
                 res: res, statusCode: StatusCodes.OK,
@@ -65,7 +65,7 @@ export class CategoryController {
 
     async updateCategory(req: Request, res: Response): Promise<void> {
         try {
-            const categoryId = req.body.categoryId;
+            const { categoryId } = req.params;
             const updateCategoryDTO: Partial<UpdateCategoryDTO> = req.body.category;
             updateCategoryDTO.categoryId = categoryId;
             const updatedCategory = await this.updateCategoryUseCase.execute(updateCategoryDTO);

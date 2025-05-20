@@ -66,7 +66,7 @@ export class ProductController {
 
     async deleteProduct(req: Request, res: Response): Promise<void> {
         try {
-            const { productId } = req.body;
+            const { productId } = req.params;
             console.log(productId);
             const deleteProductDTO: DeleteProductDTO = { productId: productId };
             await this.deleteProductUseCase.execute(deleteProductDTO);
@@ -82,7 +82,8 @@ export class ProductController {
 
     async updateProduct(req: Request, res: Response): Promise<void> {
         try {
-            const { product, productId } = req.body;
+            const { product } = req.body;
+            const { productId } = req.params;
             const updateProductDTO: UpdateProductDTO = {
                 productId,
                 product,
@@ -142,7 +143,7 @@ export class ProductController {
             const { title = '', categoryId = null, page = 1, limit = 10, createdId = null } = req.query;
             const searchProductDTO: SearchProductDTO = {
                 title: title as string,
-                categoryId: categoryId as string ,
+                categoryId: categoryId as string,
                 createdId: createdId as string,
                 peginationProduct: {
                     page: parseInt(page as string) || 1,

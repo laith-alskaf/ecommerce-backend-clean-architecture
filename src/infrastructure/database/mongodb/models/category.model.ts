@@ -18,13 +18,11 @@ const categorySchema = new Schema<CategoryDocument>({
 
 });
 
-// ✅ 1. لما يتم حذف category كوثيقة مباشرة
 categorySchema.pre('deleteOne', { document: true, query: false }, async function () {
   const categoryId = this.get('_id'); // لأنك تستخدم `id` كـ UUID
   await ProductModel.deleteMany({ categoryId });
 });
 
-// ✅ 2. لما يتم حذف category عن طريق استعلام (query)
 categorySchema.pre('deleteOne', { document: false, query: true }, async function () {
   const filter = this.getFilter();
   const category = await CategoryModel.findOne(filter);

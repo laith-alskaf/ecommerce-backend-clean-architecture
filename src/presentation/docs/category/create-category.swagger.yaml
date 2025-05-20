@@ -1,5 +1,5 @@
 paths:
-  /api/category/create:
+  /api/user/category/:
     post:
       summary: Create a new category
       tags: [Category]

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { ICategory } from "../../domain/entity/category";
 import { CategoryRepository } from "../../domain/repository/category.repository";
 import { CategoryModel } from "../database/mongodb/models/category.model";
@@ -15,7 +16,7 @@ export class MongoCategoryRepository implements CategoryRepository {
     }
 
     async delete(id: string): Promise<void> {
-        await CategoryModel.findByIdAndDelete(id);
+        await CategoryModel.deleteOne({ _id: id });
     }
 
     async update(id: string, category: Partial<ICategory>): Promise<ICategory | null> {

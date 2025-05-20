@@ -29,7 +29,7 @@ export class MongoProductRepository implements ProductRepository {
     }
 
     async findByCategoryId(categoryId: string): Promise<IProduct[] | null> {
-        return await ProductModel.findById(categoryId );
+        return await ProductModel.find({ categoryId: categoryId }).exec();
     }
 
 

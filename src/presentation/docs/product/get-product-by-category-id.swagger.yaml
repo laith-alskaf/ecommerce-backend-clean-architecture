@@ -1,5 +1,5 @@
 paths:
-  /api/product/byCategoryId/{categoryId}:
+  /api/product/byCategory/{categoryId}:
     get:
       summary: Get products by category with pagination
       tags: [Product]

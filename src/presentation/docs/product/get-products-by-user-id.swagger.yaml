@@ -1,7 +1,7 @@
 paths:
-  /api/product/mine:
+  /api/user/product/:
     get:
-      summary: Get all products with pagination
+      summary: Get all products By user id with pagination
       tags: [Product]
       security:
         - BearerAuth: []

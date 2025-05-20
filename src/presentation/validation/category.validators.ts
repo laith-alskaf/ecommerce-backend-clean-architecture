@@ -10,9 +10,9 @@ export const validateCategory = createValidationMiddleware({
 
 export const validateCategoryId = createValidationMiddleware({
   schema: categoryIdSchema,
-  dataSource: 'body',
+  dataSource: 'params',
 });
 export const validateUpdateCategory = createValidationMiddleware({
   schema: updateCategorySchema,
-  dataSource: 'body',
+  dataSource: 'composite',
 });

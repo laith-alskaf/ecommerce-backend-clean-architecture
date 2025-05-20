@@ -1,16 +1,16 @@
 paths:
-  /api/product/delete:
+  /api/user/product/{productId}:
     delete:
       summary: Delete a product
       tags: [Product]
       security:
         - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/DeleteProductDTO"
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Product deleted successfully
