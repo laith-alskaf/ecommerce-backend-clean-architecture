@@ -108,7 +108,7 @@ This is my **second training backend project**, actively developed to practice a
 | GET    | `/byCategoryId/:categoryId` | Get products by category ID        | No        | `validateGetProductByCategoryId` |
 | GET    | `/search`                   | Search products by keyword         | No        | `validateSearchProduct`          |
 
-### Wishlist (`/api/wishlist`)
+### Wishlist (`/api/user/wishlist`)
 
 | Method | Endpoint              | Description                  | Protected | Validation                  |
 | ------ | --------------------- | ---------------------------- | --------- | --------------------------- |
