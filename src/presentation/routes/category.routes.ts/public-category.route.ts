@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { CategoryController } from '../../controllers/category.controller';
+import { validateCategoryId } from '../../validation/category.validators';
 
 
 const publicCategoryRouters = (categoryController: CategoryController): Router => {
@@ -9,7 +10,7 @@ const publicCategoryRouters = (categoryController: CategoryController): Router =
         categoryController.getAllCategory.bind(categoryController),
     );
 
-    router.get("/:categoryId",
+    router.get("/:categoryId", validateCategoryId,
         categoryController.getSingleCategory.bind(categoryController)
     );
 

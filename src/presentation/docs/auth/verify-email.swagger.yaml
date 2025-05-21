@@ -1,6 +1,6 @@
 paths:
   /api/auth/verify-email:
-    get:
+    post:
       summary: Verify email using OTP code
       tags: [Auth]
       requestBody:

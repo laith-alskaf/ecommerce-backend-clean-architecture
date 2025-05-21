@@ -1,5 +1,5 @@
 paths:
-  /api/user/wishlist/add-product/{productId}:
+  /api/user/wishlist/{productId}:
     post:
       summary: Add a product to wishlist
       description: Adds a product to the authenticated user's wishlist using the product ID.
