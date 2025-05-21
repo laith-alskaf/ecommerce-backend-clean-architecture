@@ -3,6 +3,8 @@ paths:
     post:
       summary: Logout current user
       tags: [Auth]
+      security:
+        - BearerAuth: []
       responses:
         200:
           description: Logout successful
