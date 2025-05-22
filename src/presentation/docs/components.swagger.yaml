@@ -211,6 +211,8 @@ components:
     GetAllCategoriesResponse:
       type: object
       properties:
+        statusCode:
+          type: number
         success:
           type: boolean
         message:
@@ -222,7 +224,8 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/CategoryInfoDTO"
-  WishlistDTO:
+    
+    WishlistDTO:
     type: object
     required:
       - products
