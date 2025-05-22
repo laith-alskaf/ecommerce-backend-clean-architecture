@@ -175,13 +175,13 @@ components:
           type: integer
         totalItems:
           type: integer
-          body:
-            type: object
-            properties:
-              products:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ProductInfoDTO"
+        body:
+          type: object
+          properties:
+            products:
+              type: array
+              items:
+                $ref: "#/components/schemas/ProductInfoDTO"
 
     CreateCategoryDTO:
       type: object
@@ -224,7 +224,24 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/CategoryInfoDTO"
-    
+
+    WishlistDTOResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+        success:
+          type: boolean
+        message:
+          type: string
+        body:
+          type: object
+          properties:
+            products:
+              type: array
+              items:
+                $ref: "#/components/schemas/ProductInfoDTO"
+
     WishlistDTO:
     type: object
     required:
