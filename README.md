@@ -108,7 +108,7 @@ This is my **second training backend project**, actively developed to practice a
 | GET    | `/byCategoryId/:categoryId` | Get products by category ID        | No        | `validateGetProductByCategoryId` |
 | GET    | `/search`                   | Search products by keyword         | No        | `validateSearchProduct`          |
 
-### Wishlist (`/api/wishlist`)
+### Wishlist (`/api/user/wishlist`)
 
 | Method | Endpoint              | Description                  | Protected | Validation                  |
 | ------ | --------------------- | ---------------------------- | --------- | --------------------------- |
@@ -199,7 +199,7 @@ Test the API using **Postman** or **Swagger UI**:
 
 Download the Postman collection for comprehensive testing:
 
-- [Postman Collection](https://drive.google.com/file/d/1JNkTssjmVN8ZnWf0rRUmUn9c5Vkzb0kP/view?usp=drive_link)
+- [Postman Collection](https://drive.google.com/file/d/1Yfbm9KyQFlnggJJoS5LFmy48C4HaAmYZ/view?usp=drive_link)
 - Includes auth flows, product CRUD, wishlist operations, and role-based access tests.
 
 ## 🔐 Security Notes
