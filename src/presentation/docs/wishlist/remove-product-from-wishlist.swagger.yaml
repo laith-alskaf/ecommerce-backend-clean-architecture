@@ -21,24 +21,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponse"
-              example:
-                success: success
-                message: Product removed from wishlist successfully.
         "400":
           description: Bad request (e.g., product not in wishlist or invalid product ID)
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponse"
-              example:
-                success: false
-                message: Product ID does not exist in wishlist.
         "401":
           description: Unauthorized (invalid or missing token)
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponse"
-              example:
-                success: false
-                message: Unauthorized
