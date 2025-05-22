@@ -1,4 +1,3 @@
-import { IWishlist } from "../../../domain/entity/wishlist";
 import { WishlistRepository } from "../../../domain/repository/wishlist.repository";
 
 export class AddProductToWishlistUseCase {

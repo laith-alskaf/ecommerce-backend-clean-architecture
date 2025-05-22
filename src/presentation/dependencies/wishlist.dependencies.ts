@@ -1,5 +1,5 @@
 import { WishlistController } from '../controllers/wishlist.controller';
-import { MongoWishlistRepository } from '../../infrastructure/repositories/wishlist.repository';
+import { MongoWishlistRepository } from '../../infrastructure/repositories/mongo/mongo-wishlist.repository';
 import {
     GetWishlistUseCase,
     RemoveAllProductfromWishlistUseCase,

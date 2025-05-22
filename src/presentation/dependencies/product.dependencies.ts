@@ -1,4 +1,4 @@
-import { MongoProductRepository } from '../../infrastructure/repositories/product.repository';
+import { MongoProductRepository } from '../../infrastructure/repositories/mongo/mongo-product.repository';
 import { ProductController } from '../controllers/product.controller';
 import { UuidGeneratorService } from '../../infrastructure/srevices/uuid-generator.service';
 

@@ -1,7 +1,6 @@
-import mongoose from "mongoose";
-import { ICategory } from "../../domain/entity/category";
-import { CategoryRepository } from "../../domain/repository/category.repository";
-import { CategoryModel } from "../database/mongodb/models/category.model";
+import { ICategory } from "../../../domain/entity/category";
+import { CategoryRepository } from "../../../domain/repository/category.repository";
+import { CategoryModel } from "../../database/mongodb/models/category.model";
 
 export class MongoCategoryRepository implements CategoryRepository {
 

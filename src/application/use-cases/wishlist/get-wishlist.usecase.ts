@@ -1,5 +1,4 @@
 import { IProduct, ProductMapper } from "../../../domain/entity/product";
-import { IWishlist} from "../../../domain/entity/wishlist";
 import { WishlistRepository } from "../../../domain/repository/wishlist.repository";
 import { ProductInfoDTO } from "../../dtos/product.dto";
 import { WishlistDTO } from "../../dtos/wishlist.dto";

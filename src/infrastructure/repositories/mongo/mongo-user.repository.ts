@@ -1,6 +1,6 @@
-import { IUser } from '../../domain/entity/user';
-import { UserRepository } from '../../domain/repository/user.repository';
-import { UserModel } from '../database/mongodb/models/user.model';
+import { IUser } from '../../../domain/entity/user';
+import { UserRepository } from '../../../domain/repository/user.repository';
+import { UserModel } from '../../database/mongodb/models/user.model';
 
 export class MongoUserRepository implements UserRepository {
 

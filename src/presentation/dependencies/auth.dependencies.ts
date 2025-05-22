@@ -8,7 +8,7 @@ import {
 } from '../../application/use-cases/auth';
 
 // Repository
-import { MongoUserRepository } from '../../infrastructure/repositories/mongo-user.repository';
+import { MongoUserRepository } from '../../infrastructure/repositories/mongo/mongo-user.repository';
 
 //Controller
 import { AuthController } from '../controllers/auth.controller';
@@ -16,8 +16,8 @@ import { AuthController } from '../controllers/auth.controller';
 
 //Services
 import { NodemailerGmailService } from '../../infrastructure/srevices/nodemailer-gmail.service';
-import { BcryptPasswordHasher } from '../../infrastructure/srevices/bcrypt-password-hasher';
-import { OTPGeneratorService } from '../../infrastructure/srevices/otp-generator';
+import { BcryptPasswordHasher } from '../../infrastructure/srevices/bcrypt-password-hasher.service';
+import { OTPGeneratorService } from '../../infrastructure/srevices/otp-generator.service';
 import { UuidGeneratorService } from '../../infrastructure/srevices/uuid-generator.service';
 import { JwtTokenService } from '../../infrastructure/srevices/jwt-token.service';
 

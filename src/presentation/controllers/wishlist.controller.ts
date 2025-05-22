@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import { ResponseHandling } from "../../application/response/handleRespose";
-import { AddProductToWishlistUseCase } from "../../application/use-cases/wishlist/add-product-to-wishlist.usecase";
-import { GetWishlistUseCase } from "../../application/use-cases/wishlist/get-wishlist.usecase";
-import { RemoveAllProductfromWishlistUseCase } from "../../application/use-cases/wishlist/remove-all-product-from-wishlist.usecase";
-import { RemoveProductFromWishlistUseCase } from "../../application/use-cases/wishlist/remove-product-from-wishlist.usecase";
 import { Messages, StatusCodes } from "../config/constant";
-
+import {
+    RemoveAllProductfromWishlistUseCase,
+    RemoveProductFromWishlistUseCase,
+    GetWishlistUseCase,
+    AddProductToWishlistUseCase,
+} from "../../application/use-cases/wishlist";
 export class WishlistController {
 
     constructor(

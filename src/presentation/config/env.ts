@@ -11,5 +11,12 @@ export const CONFIG = {
     GMAIL_USER: process.env.GMAIL_USER,
     GMAIL_PASS: process.env.GMAIL_PASS,
 
+
+    POSTGRES_USER: process.env.POSTGRES_USER,
+    POSTGRES_HOST: process.env.POSTGRES_HOST,
+    POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
+    POSTGRES_DATABASE: process.env.POSTGRES_DATABASE,
+    POSTGRES_PORT: process.env.POSTGRES_PORT || 5432,
+
     SALT_ROUNDS_BCRYPT: 10
 };

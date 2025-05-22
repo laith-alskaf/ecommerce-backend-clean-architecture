@@ -12,6 +12,7 @@ import productRouters from './routes/product.routes.ts/product.route';
 import publicProductRoutes from "./routes/product.routes.ts/public-product.route";
 import wishlistRoutes from "./routes/wishlist.route";
 import publicCategoryRouters from "./routes/category.routes.ts/public-category.route";
+import { errorHandler, notFoundHandler } from "./middleware/error-handler.middleware";
 
 export default class Server {
     private app: Express;
@@ -36,6 +37,12 @@ export default class Server {
         this.app.use('/api/user/wishlist', wishlistRoutes(this.container.wishlistController));
     }
 
+    private setupErrorHandlers() {
+        this.app.use(notFoundHandler);
+        this.app.use(errorHandler);
+    }
+
+
     public async run(): Promise<void> {
         return new Promise((resolve) => {
             this.app.listen(CONFIG.PORT, () => {
@@ -50,6 +57,7 @@ export default class Server {
         this.container = setupDependencies();
         this.setupMiddleware();
         this.setupRoutes();
+        this.setupErrorHandlers();
     }
 }
 

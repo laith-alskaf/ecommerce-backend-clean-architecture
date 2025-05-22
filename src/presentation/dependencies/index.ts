@@ -2,22 +2,22 @@ import { CONFIG } from '../config/env';
 
 // Srevices
 import { JwtTokenService } from '../../infrastructure/srevices/jwt-token.service';
-import { BcryptPasswordHasher } from '../../infrastructure/srevices/bcrypt-password-hasher';
+import { BcryptPasswordHasher } from '../../infrastructure/srevices/bcrypt-password-hasher.service';
 import { NodemailerGmailService } from '../../infrastructure/srevices/nodemailer-gmail.service';
-import { OTPGeneratorService } from '../../infrastructure/srevices/otp-generator';
+import { OTPGeneratorService } from '../../infrastructure/srevices/otp-generator.service';
 import { UuidGeneratorService } from '../../infrastructure/srevices/uuid-generator.service';
 
 // Repositories
-import { MongoUserRepository } from '../../infrastructure/repositories/mongo-user.repository';
-import { MongoProductRepository } from '../../infrastructure/repositories/product.repository';
-import { MongoCategoryRepository } from '../../infrastructure/repositories/category.repository';
+import { MongoUserRepository } from '../../infrastructure/repositories/mongo/mongo-user.repository';
+import { MongoProductRepository } from '../../infrastructure/repositories/mongo/mongo-product.repository';
+import { MongoCategoryRepository } from '../../infrastructure/repositories/mongo/mongo-category.repository';
 
 // Controllers Dependencies
 import { AuthDependencies } from './auth.dependencies';
 import { ProductDependencies } from './product.dependencies';
 import { CategoryDependencies } from './category.dependencies';
 import { WishlistDependencies } from './wishlist.dependencies';
-import { MongoWishlistRepository } from '../../infrastructure/repositories/wishlist.repository';
+import { MongoWishlistRepository } from '../../infrastructure/repositories/mongo/mongo-wishlist.repository';
 
 
 export const setupDependencies = () => {

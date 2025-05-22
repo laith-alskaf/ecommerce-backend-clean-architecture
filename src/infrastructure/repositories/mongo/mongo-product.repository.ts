@@ -1,6 +1,6 @@
-import { IProduct } from "../../domain/entity/product";
-import { ProductRepository } from "../../domain/repository/product.repository";
-import { ProductModel } from "../database/mongodb/models/product.model";
+import { IProduct } from "../../../domain/entity/product";
+import { ProductRepository } from "../../../domain/repository/product.repository";
+import { ProductModel } from "../../database/mongodb/models/product.model";
 
 export class MongoProductRepository implements ProductRepository {
 

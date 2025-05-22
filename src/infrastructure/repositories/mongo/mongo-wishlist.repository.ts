@@ -1,7 +1,6 @@
-// src/repositories/user.repository.ts
-import { IWishlist } from '../../domain/entity/wishlist';
-import { WishlistRepository } from '../../domain/repository/wishlist.repository';
-import { WishlistModel } from '../database/mongodb/models/wishlist.model';
+import { IWishlist } from '../../../domain/entity/wishlist';
+import { WishlistRepository } from '../../../domain/repository/wishlist.repository';
+import { WishlistModel } from '../../database/mongodb/models/wishlist.model';
 
 export class MongoWishlistRepository implements WishlistRepository {
 

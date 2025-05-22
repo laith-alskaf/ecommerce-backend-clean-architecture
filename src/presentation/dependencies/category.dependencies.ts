@@ -1,4 +1,4 @@
-import { MongoCategoryRepository } from '../../infrastructure/repositories/category.repository';
+import { MongoCategoryRepository } from '../../infrastructure/repositories/mongo/mongo-category.repository';
 import { CategoryController } from '../controllers/category.controller';
 
 import {
