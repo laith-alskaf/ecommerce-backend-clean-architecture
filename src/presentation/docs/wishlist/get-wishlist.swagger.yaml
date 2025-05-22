@@ -17,7 +17,8 @@ paths:
                 status: success
                 message: Wishlist retrieved successfully.
                 body:
-                  $ref: "#/components/schemas/WishlistDTO"
+                  schema:
+                    $ref: "#/components/schemas/WishlistDTO"
         "400":
           description: Bad request (e.g., missing user ID)
           content:
@@ -36,6 +37,3 @@ paths:
               example:
                 success: false
                 message: Unauthorized
-
-
-
