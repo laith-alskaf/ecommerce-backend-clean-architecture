@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Messages, StatusCodes, UserRoles } from '../config/constant';
 import { Model } from 'mongoose';
-import { ResponseHandling } from '../../application/response/handleRespose';
+import { ForbiddenError } from '../../application/errors/application-error';
 
 export interface IOwnership {
     createdBy: string;
@@ -26,11 +26,11 @@ export const checkResourceOwnership = <T extends IOwnership>(
             const isOwner = resource.createdBy === req.user.id;
 
             if (!isSuperAdmin && !isOwner) {
-                return ResponseHandling.send({ res, statusCode: StatusCodes.FORBIDDEN, message: Messages.USER.UNAUTHORIZED_ACTION_EN });
+                new ForbiddenError(Messages.USER.UNAUTHORIZED_ACTION_EN);
             }
             next();
         } catch (error: any) {
-            return ResponseHandling.send({ res, statusCode: StatusCodes.BAD_REQUEST });
+            throw error.message = Messages.GENERAL.INVALID_REQUEST_EN;
         }
     };
 };

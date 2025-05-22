@@ -8,7 +8,7 @@ export class GetProductsByUserIdUseCase {
         private readonly productRepository: ProductRepository,
     ) { }
     execute = async (getProductsByUserIdDTO: GetProductsByUserIdDTO): Promise<{ productData: ProductInfoDTO[], total: number }> => {
-
+        console.log(getProductsByUserIdDTO.filter);
         const result = await this.productRepository.findByUserId(
             getProductsByUserIdDTO.peginationProduct.page,
             getProductsByUserIdDTO.peginationProduct.limit,

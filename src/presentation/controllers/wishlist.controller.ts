@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { ResponseHandling } from "../../application/response/handleRespose";
 import { Messages, StatusCodes } from "../config/constant";
 import {
     RemoveAllProductfromWishlistUseCase,
@@ -7,6 +6,8 @@ import {
     GetWishlistUseCase,
     AddProductToWishlistUseCase,
 } from "../../application/use-cases/wishlist";
+import { ApplicationResponse } from "../../application/response/application-resposne";
+import { BadRequestError } from "../../application/errors/application-error";
 export class WishlistController {
 
     constructor(
@@ -20,11 +21,14 @@ export class WishlistController {
         try {
             const userId = req.user.id;
             const wishlist = await this.getWishlistUseCase.execute(userId);
-            ResponseHandling.send({
-                res, statusCode: StatusCodes.OK, message: Messages.WISHLIST.GET_SUCCESS_EN, body: wishlist
-            });
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.OK, message: Messages.WISHLIST.GET_SUCCESS_EN,
+                body: wishlist
+            }).send();
+
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+            throw new BadRequestError(error.message);
         }
 
     }
@@ -35,11 +39,12 @@ export class WishlistController {
             console.log(productId);
             const userId = req.user.id;
             await this.addProductToWishlistUseCase.execute(userId, productId);
-            ResponseHandling.send({
-                res, statusCode: StatusCodes.OK, message: Messages.WISHLIST.ADD_SUCCESS_EN,
-            });
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.OK, message: Messages.WISHLIST.ADD_SUCCESS_EN,
+            }).send();
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+            throw new BadRequestError(error.message);
         }
 
     }
@@ -49,12 +54,12 @@ export class WishlistController {
             const { productId } = req.params;
             const userId = req.user?.id;
             await this.removeProductFromWishlistUseCase.execute(userId, productId);
-            ResponseHandling.send({
-                res, statusCode: StatusCodes.OK, message: Messages.WISHLIST.REMOVE_SUCCESS_EN,
-            });
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.OK, message: Messages.WISHLIST.REMOVE_SUCCESS_EN,
+            }).send();
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
-
+            throw new BadRequestError(error.message);
         }
 
     }
@@ -64,11 +69,12 @@ export class WishlistController {
         try {
             const userId = req.user?.id;
             await this.removeAllProductfromWishlistUseCase.execute(userId!);
-            ResponseHandling.send({
-                res, statusCode: StatusCodes.OK, message: Messages.WISHLIST.CLEAR_SUCCESS_EN,
-            });
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.OK, message: Messages.WISHLIST.CLEAR_SUCCESS_EN,
+            }).send();
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+            throw new BadRequestError(error.message);
         }
 
     }

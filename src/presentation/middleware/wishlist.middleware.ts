@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { WishlistModel } from '../../infrastructure/database/mongodb/models/wishlist.model';
 import { Messages, StatusCodes } from '../config/constant';
-import { ResponseHandling } from '../../application/response/handleRespose';
+import { BadRequestError } from '../../application/errors/application-error';
 
 
 
@@ -25,7 +25,7 @@ export const wishlistProductIdMiddleware = (isAdd: boolean) => {
             next();
 
         } catch (error: any) {
-            return ResponseHandling.send({ res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+              throw new BadRequestError(error.message);
         }
     }
 

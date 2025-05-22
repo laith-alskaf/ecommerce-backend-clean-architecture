@@ -79,6 +79,8 @@ components:
     ApiResponse:
       type: object
       properties:
+        statusCode:
+          type: number
         success:
           type: boolean
         message:

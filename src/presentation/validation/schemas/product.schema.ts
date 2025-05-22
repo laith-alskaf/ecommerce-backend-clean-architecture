@@ -12,7 +12,7 @@ export const categoryIdSchema = Joi.object({
         })
 });
 
-export const productSchema = categoryIdSchema.keys({
+export const productSchema = Joi.object({
     title: Joi.string()
         .required()
         .messages({
@@ -34,7 +34,7 @@ export const productSchema = categoryIdSchema.keys({
         }),
     stockQuantity: Joi.number().default(0),
     images: Joi.array().items(Joi.string().uri()),
-});
+}).concat(categoryIdSchema);
 
 export const productIdSchema = Joi.object({
     productId: Joi.string()

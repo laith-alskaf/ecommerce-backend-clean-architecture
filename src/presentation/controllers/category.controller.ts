@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { ResponseHandling } from "../../application/response/handleRespose";
 import { Messages, StatusCodes } from '../config/constant';
 import { CreateCategoryDTO, UpdateCategoryDTO } from '../../application/dtos/category.dto';
 import {
@@ -9,6 +8,8 @@ import {
     GetCategoryByIdUseCase,
     UpdateCategoryUseCase,
 } from '../../application/use-cases/category';
+import { ApplicationResponse } from '../../application/response/application-resposne';
+import { BadRequestError } from '../../application/errors/application-error';
 
 export class CategoryController {
 
@@ -23,14 +24,17 @@ export class CategoryController {
     async getAllCategory(_req: Request, res: Response): Promise<void> {
         try {
             const category = await this.getAllCategoriesUseCase.execute();
-            ResponseHandling.send({
-                res: res, statusCode: StatusCodes.OK,
+
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.OK,
                 message: Messages.CATEGORY.GET_ALL_SUCCESS_EN,
                 body: { categories: category }
-            });
+            }).send();
+
 
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+            throw new BadRequestError(Messages.CATEGORY.NOT_FOUND_CATEGORIES_EN);
         }
     }
 
@@ -39,13 +43,14 @@ export class CategoryController {
             const createCategoryDTO: Partial<CreateCategoryDTO> = req.body;
             createCategoryDTO.createdBy = req.user.id;
             await this.createCategoryUseCase.execute(createCategoryDTO);
-            ResponseHandling.send({
-                res: res, statusCode: StatusCodes.CREATED,
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.CREATED,
                 message: Messages.CATEGORY.CREATE_SUCCESS_EN,
-            });
+            }).send();
 
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+            throw new BadRequestError(error.message);
         }
     }
 
@@ -53,13 +58,14 @@ export class CategoryController {
         try {
             const { categoryId } = req.params;
             await this.deleteCategoryUseCase.execute(categoryId);
-            ResponseHandling.send({
-                res: res, statusCode: StatusCodes.OK,
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.OK,
                 message: Messages.CATEGORY.DELETE_SUCCESS_EN
-            });
+            }).send();
 
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+            throw new BadRequestError(error.message);
         }
     }
 
@@ -69,15 +75,16 @@ export class CategoryController {
             const updateCategoryDTO: Partial<UpdateCategoryDTO> = req.body.category;
             updateCategoryDTO.categoryId = categoryId;
             const updatedCategory = await this.updateCategoryUseCase.execute(updateCategoryDTO);
-            ResponseHandling.send({
-                res: res, statusCode: StatusCodes.OK,
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.OK,
                 message: Messages.CATEGORY.UPDATE_SUCCESS_EN,
                 body: {
                     category: updatedCategory
                 }
-            });
+            }).send();
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+            throw new BadRequestError(error.message);
         }
     }
 
@@ -85,16 +92,17 @@ export class CategoryController {
         try {
             const { categoryId } = req.params;
             const category = await this.getCategoryByIdUseCase.execute(categoryId);
-            ResponseHandling.send({
-                res: res, statusCode: StatusCodes.OK,
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.OK,
                 message: Messages.CATEGORY.GET_SUCCESS_EN,
                 body: {
                     category: category
                 }
-            });
+            }).send();
 
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: 400, message: error.message });
+            throw new BadRequestError(error.message);
         }
     }
 

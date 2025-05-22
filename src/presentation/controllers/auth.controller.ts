@@ -1,14 +1,15 @@
 import { Request, Response } from 'express';
 import { ChangePasswordDTO, ForgotPasswordDTO, LoginDTO, RegisterDTO, VerifyEmailDTO } from '../../application/dtos/user.dto';
 import { Messages, StatusCodes } from '../config/constant';
-import { ResponseHandling } from '../../application/response/handleRespose';
 import {
   LoginUseCase,
   RegisterUseCase,
-  VerifiyEmailUseCase as VerifyEmailUseCase, 
+  VerifiyEmailUseCase as VerifyEmailUseCase,
   ChangePasswordUseCase,
   ForgotPasswordUseCase,
 } from "../../application/use-cases/auth";
+import { ApplicationResponse } from '../../application/response/application-resposne';
+import { BadRequestError } from '../../application/errors/application-error';
 
 
 export class AuthController {
@@ -17,7 +18,7 @@ export class AuthController {
     private readonly registerUseCase: RegisterUseCase,
     private readonly loginUseCase: LoginUseCase,
     private readonly forgotPasswordUseCase: ForgotPasswordUseCase,
-    private readonly verifyEmailUseCase: VerifyEmailUseCase, 
+    private readonly verifyEmailUseCase: VerifyEmailUseCase,
     private readonly changePasswordUseCase: ChangePasswordUseCase,
   ) { }
 
@@ -26,17 +27,14 @@ export class AuthController {
     try {
       const registerData: RegisterDTO = req.body;
       await this.registerUseCase.execute(registerData);
-      ResponseHandling.send({
-        res,
+      new ApplicationResponse(res, {
+        success: true,
         statusCode: StatusCodes.CREATED,
         message: Messages.AUTH.REGISTER_SUCCESS_EN,
-      });
+      }).send();
+
     } catch (error: any) {
-      ResponseHandling.send({
-        res,
-        statusCode: StatusCodes.BAD_REQUEST,
-        message: error.message
-      });
+      throw new BadRequestError(error.message);
     }
   }
 
@@ -45,8 +43,8 @@ export class AuthController {
     try {
       const loginData: LoginDTO = req.body;
       const { token, user } = await this.loginUseCase.execute(loginData);
-      ResponseHandling.send({
-        res,
+      new ApplicationResponse(res, {
+        success: true,
         statusCode: StatusCodes.OK,
         message: Messages.AUTH.LOGIN_SUCCESS_EN,
         body: {
@@ -58,23 +56,19 @@ export class AuthController {
             role: user.role
           }
         }
-      });
+      }).send();
     } catch (error: any) {
-      ResponseHandling.send({
-        res,
-        statusCode: StatusCodes.BAD_REQUEST,
-        message: error.message
-      });
+      throw new BadRequestError(error.message);
     }
   }
 
 
   async logout(_req: Request, res: Response): Promise<void> {
-    ResponseHandling.send({
-      res,
+    new ApplicationResponse(res, {
+      success: true,
       statusCode: StatusCodes.OK,
       message: Messages.AUTH.LOGOUT_SUCCESS_EN || "Logged out successfully"
-    });
+    }).send();
   }
 
 
@@ -82,17 +76,13 @@ export class AuthController {
     try {
       const forgotPasswordDTO: ForgotPasswordDTO = req.body;
       await this.forgotPasswordUseCase.execute(forgotPasswordDTO);
-      ResponseHandling.send({
-        res,
+      new ApplicationResponse(res, {
+        success: true,
         statusCode: StatusCodes.OK,
         message: Messages.AUTH.FORGOT_PASSWORD_SUCCESS_EN
-      });
+      }).send();
     } catch (error: any) {
-      ResponseHandling.send({
-        res,
-        statusCode: StatusCodes.BAD_REQUEST,
-        message: error.message
-      });
+      throw new BadRequestError(error.message);
     }
   }
 
@@ -101,17 +91,13 @@ export class AuthController {
     try {
       const verifyEmailDTO: VerifyEmailDTO = req.body;
       await this.verifyEmailUseCase.execute(verifyEmailDTO);
-      ResponseHandling.send({
-        res,
+      new ApplicationResponse(res, {
+        success: true,
         statusCode: StatusCodes.OK,
         message: Messages.AUTH.VERIFY_SUCCESS_EN
-      });
+      }).send();
     } catch (error: any) {
-      ResponseHandling.send({
-        res,
-        statusCode: StatusCodes.BAD_REQUEST,
-        message: error.message
-      });
+      throw new BadRequestError(error.message);
     }
   }
 
@@ -120,17 +106,13 @@ export class AuthController {
     try {
       const changePasswordDTO: ChangePasswordDTO = req.body;
       await this.changePasswordUseCase.execute(changePasswordDTO);
-      ResponseHandling.send({
-        res,
+      new ApplicationResponse(res, {
+        success: true,
         statusCode: StatusCodes.OK,
         message: Messages.AUTH.RESET_PASSWORD_SUCCESS_EN
-      });
+      }).send();
     } catch (error: any) {
-      ResponseHandling.send({
-        res,
-        statusCode: StatusCodes.BAD_REQUEST,
-        message: error.message
-      });
+      throw new BadRequestError(error.message);
     }
   }
 }

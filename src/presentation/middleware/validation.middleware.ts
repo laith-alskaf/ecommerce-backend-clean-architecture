@@ -1,8 +1,8 @@
 import { NextFunction } from 'express';
 import Joi from 'joi';
 import { Request, Response } from 'express';
-import { ResponseHandling } from '../../application/response/handleRespose';
-import { StatusCodes } from '../config/constant';
+import { Messages, StatusCodes } from '../config/constant';
+import { ApplicationResponse } from '../../application/response/application-resposne';
 
 
 interface ValidationConfig {
@@ -18,10 +18,14 @@ export const createValidationMiddleware = ({
 }: ValidationConfig) => {
     return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-     
+
             const data = dataSource === 'composite'
                 ? { ...req.params, ...req.body }
                 : req[dataSource];
+            console.log(data);
+            // if (!data || Object.keys(data).length === 0) {
+            //     throw new Error(Messages.GENERAL.INVALID_PARAMETERS_EN);
+            // }
             if (useAsync) {
                 await validateAsync(data, schema);
             } else {
@@ -29,11 +33,11 @@ export const createValidationMiddleware = ({
             }
             next();
         } catch (error: any) {
-            ResponseHandling.send({
-                res,
+            return new ApplicationResponse(res, {
+                success: false,
                 statusCode: StatusCodes.BAD_REQUEST,
                 message: error.message
-            });
+            }).send();
         }
     };
 };

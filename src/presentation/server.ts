@@ -13,6 +13,7 @@ import publicProductRoutes from "./routes/product.routes.ts/public-product.route
 import wishlistRoutes from "./routes/wishlist.route";
 import publicCategoryRouters from "./routes/category.routes.ts/public-category.route";
 import { errorHandler, notFoundHandler } from "./middleware/error-handler.middleware";
+import { logger } from "./middleware/logger.middleware";
 
 export default class Server {
     private app: Express;
@@ -23,6 +24,7 @@ export default class Server {
     }
 
     private setupMiddleware() {
+        this.app.use(logger);
         this.app.use(express.json());
         this.app.use(authMiddleware(this.container.tokenService, this.container.userRepository))
     }

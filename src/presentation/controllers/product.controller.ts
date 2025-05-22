@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { ResponseHandling } from "../../application/response/handleRespose";
 import { CreateProductDTO, DeleteProductDTO, GetProductsByUserIdDTO, PeginationProductDTO, SearchProductDTO, UpdateProductDTO } from '../../application/dtos/product.dto';
 import { Messages, StatusCodes } from '../config/constant';
 import {
@@ -12,6 +11,8 @@ import {
     GetAllProductsUseCase,
     SearchProductsUseCase,
 } from "../../application/use-cases/product";
+import { ApplicationResponse } from '../../application/response/application-resposne';
+import { BadRequestError } from '../../application/errors/application-error';
 
 
 export class ProductController {
@@ -34,8 +35,10 @@ export class ProductController {
                 limit: parseInt(req.query.limit as string) || 5
             };
             const { productData, total } = await this.getAllProductsUseCase.execute(peginationProductDTO, {});
-            ResponseHandling.send({
-                res: res, statusCode: StatusCodes.OK,
+
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.OK,
                 message: Messages.PRODUCT.GET_ALL_SUCCESS_EN,
                 body: {
                     currentPage: peginationProductDTO.page,
@@ -43,24 +46,31 @@ export class ProductController {
                     totalItems: total,
                     products: productData,
                 }
-            });
+            }).send();
 
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+            throw new BadRequestError(Messages.PRODUCT.NOT_FOUND_PRODUCTS_EN);
         }
     }
 
     async createProduct(req: Request, res: Response): Promise<void> {
+
         try {
-            const createProductDTO: Partial<CreateProductDTO> = req.body;
-            createProductDTO.createdBy = req.user.id,
-                await this.createProductUseCase.execute(createProductDTO);
-            ResponseHandling.send({
-                res: res, statusCode: StatusCodes.CREATED,
+            const body = req.body;
+            const userId = req.user.id
+            const createProductDTO: CreateProductDTO = {
+                ...body,
+                createdBy: userId
+            };
+            createProductDTO.createdBy = req.user.id;
+            await this.createProductUseCase.execute(createProductDTO);
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.CREATED,
                 message: Messages.PRODUCT.CREATE_SUCCESS_EN,
-            });
+            }).send();
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+            throw new BadRequestError(error.message);
         }
     }
 
@@ -70,13 +80,14 @@ export class ProductController {
             console.log(productId);
             const deleteProductDTO: DeleteProductDTO = { productId: productId };
             await this.deleteProductUseCase.execute(deleteProductDTO);
-            ResponseHandling.send({
-                res: res, statusCode: StatusCodes.OK,
-                message: Messages.PRODUCT.DELETE_SUCCESS_EN
-            });
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.OK,
+                message: Messages.PRODUCT.DELETE_SUCCESS_EN,
+            }).send();
 
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: Messages.PRODUCT.NOT_FOUND_OPERATION_EN });
+            throw new BadRequestError(Messages.PRODUCT.NOT_FOUND_OPERATION_EN);
         }
     }
 
@@ -90,16 +101,17 @@ export class ProductController {
                 updatedAt: new Date(),
             }
             const updatedProduct = await this.updatedProductUseCase.execute(updateProductDTO);
-            ResponseHandling.send({
-                res: res, statusCode: StatusCodes.OK,
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.OK,
                 message: Messages.PRODUCT.UPDATE_SUCCESS_EN,
                 body: {
                     product: updatedProduct
                 }
-            });
+            }).send();
 
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: Messages.PRODUCT.NOT_FOUND_OPERATION_EN });
+            throw new BadRequestError(Messages.PRODUCT.NOT_FOUND_OPERATION_EN);
         }
     }
 
@@ -107,16 +119,17 @@ export class ProductController {
         try {
             const { productId } = req.params;
             const prodcut = await this.getProductByIdUseCase.execute(productId);
-            ResponseHandling.send({
-                res: res, statusCode: StatusCodes.OK,
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.OK,
                 message: Messages.PRODUCT.GET_SUCCESS_EN,
                 body: {
                     product: prodcut
                 }
-            });
+            }).send();
 
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: error.message });
+            throw new BadRequestError(error.message);
         }
     }
 
@@ -124,16 +137,17 @@ export class ProductController {
         try {
             const { categoryId } = req.params;
             const prodcuts = await this.getProductsByCategoryIdUseCase.execute(categoryId);
-            ResponseHandling.send({
-                res: res, statusCode: StatusCodes.OK,
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.OK,
                 message: Messages.PRODUCT.GET_ALL_SUCCESS_EN,
                 body: {
                     products: prodcuts
                 }
-            });
+            }).send();
 
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: Messages.PRODUCT.NOT_FOUND_PRODUCTS_EN });
+            throw new BadRequestError(Messages.PRODUCT.NOT_FOUND_PRODUCTS_EN);
         }
     }
 
@@ -151,22 +165,25 @@ export class ProductController {
                 }
             }
             const prodcuts = await this.searchProductsUseCase.execute(searchProductDTO);
-            ResponseHandling.send({
-                res: res, statusCode: StatusCodes.OK,
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.OK,
                 message: Messages.PRODUCT.GET_ALL_SUCCESS_EN,
                 body: {
-                    ...prodcuts
+                    total: prodcuts.total,
+                    products: prodcuts.productData,
                 }
-            });
+            }).send();
 
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: Messages.PRODUCT.NO_RESULTS_EN });
+            throw new BadRequestError(Messages.PRODUCT.NO_RESULTS_EN);
         }
     }
 
     async getProductsByUserId(req: Request, res: Response): Promise<void> {
         try {
             const userId = req.user.id;
+            console.log(userId);
             const { page = 1, limit = 10 } = req.query;
             const getProductsByUserIdDTO: GetProductsByUserIdDTO = {
                 filter: { createdBy: userId },
@@ -177,8 +194,9 @@ export class ProductController {
 
             }
             const { productData, total } = await this.getProductsByUserIdUseCase.execute(getProductsByUserIdDTO);
-            ResponseHandling.send({
-                res: res, statusCode: StatusCodes.OK,
+            new ApplicationResponse(res, {
+                success: true,
+                statusCode: StatusCodes.OK,
                 message: Messages.PRODUCT.GET_ALL_SUCCESS_EN,
                 body: {
                     currentPage: getProductsByUserIdDTO.peginationProduct.page,
@@ -186,10 +204,10 @@ export class ProductController {
                     totalItems: total,
                     products: productData,
                 }
-            });
+            }).send();
 
         } catch (error: any) {
-            ResponseHandling.send({ res: res, statusCode: StatusCodes.BAD_REQUEST, message: Messages.PRODUCT.NOT_FOUND_PRODUCTS_EN });
+            throw new BadRequestError(Messages.PRODUCT.NOT_FOUND_PRODUCTS_EN);
         }
     }
 

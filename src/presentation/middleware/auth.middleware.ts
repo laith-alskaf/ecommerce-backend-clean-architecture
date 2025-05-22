@@ -1,11 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { Messages, StatusCodes } from '../config/constant';
+import { Messages } from '../config/constant';
 import { UserRepository } from '../../domain/repository/user.repository';
 import { CONFIG } from '../config/env';
 import { TokenService } from '../../domain/services/token.service';
-import { ResponseHandling } from '../../application/response/handleRespose';
 import { excludedPathsForAuth } from '../../application/constants/auth.exclusions';
-import { ForbiddenError, UnauthorizedError } from '../../application/errors/application-error';
+import { BadRequestError, ForbiddenError, UnauthorizedError } from '../../application/errors/application-error';
 
 declare global {
     namespace Express {
@@ -51,7 +50,7 @@ export const authMiddleware = (tokenService: TokenService, userRepository: UserR
 
             const user = await userRepository.findById(userInfo.id);
             if (!user) {
-                throw new ForbiddenError(Messages.AUTH.INVALID_TOKEN_EN);
+                throw new BadRequestError(Messages.USER.USER_NOT_FOUND_EN)
             }
 
             req.user = {
@@ -59,9 +58,9 @@ export const authMiddleware = (tokenService: TokenService, userRepository: UserR
                 role: userInfo.role
             };
             next();
-        } catch (error: any) {
-            const statusCode = error instanceof UnauthorizedError ? StatusCodes.UNAUTHORIZED : StatusCodes.FORBIDDEN;
-            return ResponseHandling.send({ res, statusCode, message: error.message });
+        } catch (error) {
+            console.log('6666666666666666666666666666');
+            throw new UnauthorizedError((error as any).message)
         }
     };
 };
