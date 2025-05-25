@@ -1,6 +1,6 @@
 # 🛍️ E-Commerce Backend with Wishlist - Clean Architecture
 
-A **scalable**, **secure**, and **maintainable** e-commerce backend built with **Node.js**, **TypeScript**, **Express**, and **MongoDB**, following **Clean Architecture** principles. This project powers a modern e-commerce platform with robust user authentication, role-based access control, product and category management, and a user wishlist system. It includes comprehensive **Swagger documentation** and is designed for developers learning real-world backend development.
+A **scalable**, **secure**, and **maintainable** e-commerce backend built with **Node.js**, **TypeScript**, **Express**, **MongoDB**, and **PostgreSQL**, following **Clean Architecture** principles. This project powers a modern e-commerce platform with robust user authentication, role-based access control, product and category management, user wishlist, and user profile management. It includes comprehensive **Swagger documentation** and is designed for developers learning real-world backend development.
 
 ## 🎯 Why This Project?
 
@@ -10,7 +10,7 @@ This is my **second training backend project**, actively developed to practice a
 - 🎓 **TypeScript** for type-safe backend development.
 - 🔐 **Authentication** and **authorization** systems (JWT, role-based access).
 - 🛒 **RESTful API design** for e-commerce applications.
-- 🧪 Real-world features like wishlist management and input validation.
+- 🧪 Real-world features like wishlist management, user profile updates, and input validation.
 
 ## ✨ Features
 
@@ -25,7 +25,7 @@ This is my **second training backend project**, actively developed to practice a
 
 - **SuperAdmin**: Full system access (e.g., manage all products/categories).
 - **Admin**: Manage own products and categories.
-- **Customer**: Browse products, manage wishlist, and shop.
+- **Customer**: Browse products, manage wishlist, update profile, and shop.
 
 ### 🛒 Product Management
 
@@ -47,6 +47,13 @@ This is my **second training backend project**, actively developed to practice a
 - **DELETE /wishlist/product/:productId**: Remove a product from the wishlist (with validation).
 - **DELETE /wishlist/all-product**: Clear the entire wishlist.
 - All wishlist operations require **JWT authentication**.
+
+### 👤 User Profile Management
+
+- **GET /api/user/me**: Retrieve authenticated user's profile information.
+- **PUT /api/user/me**: Update user profile (e.g., name, email).
+- **DELETE /api/user/me**: Delete user account permanently.
+- All profile operations require **JWT authentication** and input validation.
 
 ### 🧪 Validation & Security
 
@@ -74,6 +81,14 @@ This is my **second training backend project**, actively developed to practice a
 | POST   | `/change-password` | Change password using OTP | No        | `validateChangePassword` |
 | POST   | `/verify-email`    | Verify email with OTP     | No        | `validateVerifyEmail`    |
 | POST   | `/logout`          | Log out a user            | Yes       | None                     |
+
+### User Profile (`/api/user`)
+
+| Method | Endpoint | Description              | Protected | Validation               |
+| ------ | -------- | ------------------------ | --------- | ------------------------ |
+| GET    | `/me`    | Get user profile info    | Yes       | None                     |
+| PUT    | `/me`    | Update user profile info | Yes       | `validateUpdateUserInfo` |
+| DELETE | `/me`    | Delete user account      | Yes       | None                     |
 
 ### User-Categories (`/api/user/category`)
 
@@ -118,8 +133,9 @@ This is my **second training backend project**, actively developed to practice a
 | DELETE | `/all-product`        | Clear entire wishlist        | Yes       | None                        |
 
 ### API Documentation
+
 - [API Documentation](https://ecommerce-backend-clean-architecture.vercel.app/api-docs/)
-  
+
 | Method | Endpoint    | Description                          |
 | ------ | ----------- | ------------------------------------ |
 | GET    | `/api-docs` | Interactive Swagger UI documentation |
@@ -129,23 +145,26 @@ This is my **second training backend project**, actively developed to practice a
 - **Runtime**: Node.js (v18+)
 - **Language**: TypeScript
 - **Framework**: Express.js
-- **Database**: MongoDB with Mongoose
+- **Databases**:
+  - **MongoDB**: NoSQL database with Mongoose.
+  - **PostgreSQL**: Relational database managed via **Supabase** for enhanced scalability and user management.
 - **Authentication**: JWT (jsonwebtoken), bcrypt
 - **Validation**: Joi
-- **ID Generation**: UUID
+- **ID Generation**: UUID, PostgreSQL auto-increment
 - **Documentation**: Swagger (swagger-jsdoc, swagger-ui-express)
 - **Security**: CORS, dotenv
-- **Others**: crypto
+- **Cloud Services**: Supabase (PostgreSQL)
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- MongoDB (local or MongoDB Atlas)
-- npm
+- **Node.js**: v18 or higher
+- **MongoDB**: Local or MongoDB Atlas
+- **PostgreSQL**: Supabase account for managed PostgreSQL database
+- **npm**
 
-### Steps
+### Setup Instructions
 
 1. **Clone the repository**:
 
@@ -154,53 +173,59 @@ This is my **second training backend project**, actively developed to practice a
    cd ecommerce-backend-clean-architecture
    ```
 
-2. **Create `.env` file**:
+2. **Set up Supabase**:
+
+   - Create a Supabase account at [Supabase.io](https://supabase.com/).
+   - Create a new project and obtain the PostgreSQL connection string (e.g., `postgresql://[user]:[password]@[host]:[port]/[db]`).
+   - Update the `DATABASE_URL` in the `.env` file with the Supabase connection string.
+
+3. **Create `.env` file**:
    Copy `.env.example` to `.env` and update with your configuration:
 
    ```
-   PORT=3000
-   MONGODB_URI=mongodb://localhost:27017/ecommerce
-   JWT_SECRET=your-secret-key
-   NOOE_ENV=development
-   GMAIL_USER=laithalskaf@gmail.com
-   GMAIL_PASS=************
-   CLIENT_URL= http://localhost:5000
-   SERVER_URL=https://ecommerce-backend-clean-architecture.vercel.app
-
+   PORT= ***
+   MONGODB_URI= ***
+   POSTGRES_URL= ***
+   JWT_SECRET= your-secret-key
+   NODE_ENV= development
+   GMAIL_USER= ***
+   GMAIL_PASS= ***
+   CLIENT_URL= ***
+   SERVER_URL= ***
    ```
 
-3. **Install dependencies**:
+4. **Install dependencies**:
 
    ```bash
    npm install
    ```
 
-4. **Run the development server**:
+5. **Run the development server**:
 
    ```bash
    npm run dev
    ```
 
-5. **Access the API**:
-   - Base URL: `http://localhost:5000/api`
-   - Swagger UI: `http://localhost:5000/api-docs`
+6. **Access the API**:
+   - Base URL: `http://localhost:Port/api`
+   - Swagger UI: `http://localhost:Port/api-docs`
 
 ## 🧪 API Testing
 
 Test the API using **Postman** or **Swagger UI**:
 
 1. Register a user via `/api/auth/register`.
-2. verify your email `/api/auth/verify-email`.
+2. Verify your email via `/api/auth/verify-email`.
 3. Log in via `/api/auth/login` to obtain a JWT token.
-4. Use the token in the `Authorization` header (`Bearer <token>`) for protected endpoints.
+4. Use the token in the `Authorization` header (`Bearer <token>`) for protected endpoints (e.g., `/api/user/me`).
 5. Explore all endpoints in Swagger UI at `/api-docs`.
 
 ### 📥 Postman Collection
 
 Download the Postman collection for comprehensive testing:
 
-- [Postman Collection](https://drive.google.com/file/d/1Yfbm9KyQFlnggJJoS5LFmy48C4HaAmYZ/view?usp=drive_link)
-- Includes auth flows, product CRUD, wishlist operations, and role-based access tests.
+- [Postman Collection](https://drive.google.com/file/d/1qBzZ5rqvDApSoeo0YslUUBoDS_2W_dXR/view?usp=drive_link)
+- Includes auth flows, product CRUD, wishlist operations, user profile management, and role-based access tests.
 
 ## 🔐 Security Notes
 
@@ -209,24 +234,25 @@ Download the Postman collection for comprehensive testing:
 - **Input Validation**: Joi ensures robust data validation.
 - **Resource Ownership**: Middleware prevents unauthorized product modifications.
 - **CORS**: Configured for development; restrict origins in production.
+- **Supabase Security**: Supabase provides row-level security and SSL for PostgreSQL connections.
 
 ## 📌 Project Status
 
-This is my **second training backend project**, actively maintained to practice real-world backend development. I’m continuously improving it by:
+This is my **second training backend project**, actively maintained to practice real-world backend development. Recent updates include:
 
-- Adding new features (e.g., wishlist system).
-- Applying best practices (e.g., Clean Architecture, TypeScript).
-- Enhancing security and performance (e.g., MongoDB indexing, middleware).
+- Integrated **PostgreSQL** via **Supabase** for scalable relational database management.
+- Added **user profile endpoints** (`/api/user/me`) for managing user information.
+- Continuously improving with new features, security enhancements, and performance optimizations.
 
-I’m regularly pushing updates to GitHub as I experiment with new techniques, like debugging wishlist deletion issues or integrating PostgreSQL support. Follow along for my latest progress, and feel free to share feedback or ideas!
+I’m regularly pushing updates to GitHub as I experiment with new techniques, like debugging wishlist deletion issues or integrating Supabase. Follow along for my latest progress, and feel free to share feedback or ideas!
 
 ## 📈 Future Improvements
 
-- Adding support for **PostgreSQL** database alongside MongoDB:.
 - Implement **refresh tokens** for extended sessions.
 - Support **multilingual responses** (e.g., Arabic).
 - Integrate **payment gateways** (e.g., Stripe).
 - Introduce **Jest** for unit and integration testing.
+- Add **real-time features** using WebSockets (e.g., order updates).
 
 ## 🤝 Contributing
 
