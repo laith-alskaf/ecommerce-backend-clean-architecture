@@ -6,7 +6,7 @@ import {
     validateForgotPass,
     validateVerifyEmail,
     validateChangePassword
-} from '../validation/user.validators';
+} from '../validation/auth.validators';
 
 
 

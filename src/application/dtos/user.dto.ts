@@ -23,11 +23,9 @@ export interface VerifyEmailDTO {
 }
 
 export interface UserInfoDTO {
-    id: string,
-    profileImageUrl: string | null,
     userName: string,
     email: string,
-    role: string,
+    role: "customer" | "admin" | "superAdmin"
 }
 
 export interface SecretTokenDTO {

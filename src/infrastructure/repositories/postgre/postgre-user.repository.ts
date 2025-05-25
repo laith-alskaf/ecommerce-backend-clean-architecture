@@ -3,6 +3,7 @@ import { UserRepository } from "../../../domain/repository/user.repository";
 import { IUser } from "../../../domain/entity/user";
 import Database from "../../database/postgreSQL";
 
+
 export class PostgresUserRepository implements UserRepository {
     private db: Pool;
 

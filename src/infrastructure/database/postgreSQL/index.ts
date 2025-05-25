@@ -2,6 +2,7 @@ import { Pool } from "pg"
 import { CONFIG } from "../../../presentation/config/env";
 
 
+
 export default class Database {
     private static instance: Database;
     private isConnected: boolean = false;
@@ -26,16 +27,20 @@ export default class Database {
         try {
 
             this.pool = new Pool({
-                user: CONFIG.POSTGRES_USER,
-                host: CONFIG.POSTGRES_HOST,
-                database: CONFIG.POSTGRES_DATABASE,
-                password: CONFIG.POSTGRES_PASSWORD,
-                port: CONFIG.POSTGRES_PORT as number,
-                ssl: true
+                // user: CONFIG.POSTGRES_USER,
+                connectionString: CONFIG.POSTGRES_HOST,
+                // host: CONFIG.POSTGRES_HOST,
+                // database: CONFIG.POSTGRES_DATABASE,
+                // password: CONFIG.POSTGRES_PASSWORD,
+                // port: CONFIG.POSTGRES_PORT as number,
+                ssl: {
+                    rejectUnauthorized: false // فقط في البيئة التجريبية
+                }
             })
 
             await this.pool.connect();
             this.isConnected = true;
+         
 
             console.log("Connected to PostgreSQL");
 

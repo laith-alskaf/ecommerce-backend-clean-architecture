@@ -8,7 +8,7 @@ import {
 } from '../../application/use-cases/auth';
 
 // Repository
-import { MongoUserRepository } from '../../infrastructure/repositories/mongo/mongo-user.repository';
+import { UserRepository } from '../../domain/repository/user.repository';
 
 //Controller
 import { AuthController } from '../controllers/auth.controller';
@@ -23,7 +23,7 @@ import { JwtTokenService } from '../../infrastructure/srevices/jwt-token.service
 
 interface AuthDependenciesType {
     tokenService: JwtTokenService;
-    userRepository: MongoUserRepository;
+    userRepository: UserRepository;
     encryptionService: BcryptPasswordHasher;
     emailService: NodemailerGmailService;
     otpGeneratorService: OTPGeneratorService,

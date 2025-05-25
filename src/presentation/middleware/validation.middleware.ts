@@ -22,10 +22,7 @@ export const createValidationMiddleware = ({
             const data = dataSource === 'composite'
                 ? { ...req.params, ...req.body }
                 : req[dataSource];
-            console.log(data);
-            // if (!data || Object.keys(data).length === 0) {
-            //     throw new Error(Messages.GENERAL.INVALID_PARAMETERS_EN);
-            // }
+
             if (useAsync) {
                 await validateAsync(data, schema);
             } else {

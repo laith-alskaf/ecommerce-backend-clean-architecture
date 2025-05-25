@@ -6,9 +6,10 @@ import {
     RemoveProductFromWishlistUseCase,
     AddProductToWishlistUseCase
 } from "../../application/use-cases/wishlist";
+import { WishlistRepository } from '../../domain/repository/wishlist.repository';
 
 interface WishlistDependenciesType {
-    wishlistRepository: MongoWishlistRepository;
+    wishlistRepository: WishlistRepository;
 }
 
 export const WishlistDependencies = ({

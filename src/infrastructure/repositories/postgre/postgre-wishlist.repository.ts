@@ -1,44 +1,65 @@
-import Database from "../../database/postgreSQL";
+import { Pool } from "pg";
+import { IWishlist } from "../../../domain/entity/wishlist";
+import { WishlistRepository } from "../../../domain/repository/wishlist.repository";
+import Database from "../../database/postgreSQL/index";
 
-export class WishlistRepository {
-    private db = Database.getInstance().getPool();
+export class PostgresWishlistRepository implements WishlistRepository {
+    private db: Pool;
 
-    async createWishlist(userId: string, productsId: string[]): Promise<any> {
+    constructor() {
+        this.db = Database.getInstance().getPool();
+    }
+
+    async create(userId: string): Promise<IWishlist> {
         const query = `
             INSERT INTO wishlists (user_id, products_id)
             VALUES ($1, $2)
             RETURNING *;
         `;
-        const result = await this.db.query(query, [userId, productsId]);
+        const values = [userId, []]; // Initialize with an empty array for products
+        const result = await this.db.query(query, values);
         return result.rows[0];
     }
 
-    async getWishlistByUserId(userId: string): Promise<any> {
+    async findById(userId: string): Promise<IWishlist | null> {
         const query = `
             SELECT * FROM wishlists
             WHERE user_id = $1;
         `;
         const result = await this.db.query(query, [userId]);
-        return result.rows[0];
+        if (result.rows.length === 0) return null;
+
+        // Convert PostgreSQL array to IWishlist format
+        return {
+            userId: result.rows[0].user_id,
+            productsId: result.rows[0].products_id,
+        };
     }
 
-    async updateWishlist(userId: string, productsId: string[]): Promise<any> {
+    async add(userId: string, productId: string): Promise<void> {
         const query = `
             UPDATE wishlists
-            SET products_id = $1, updated_at = CURRENT_TIMESTAMP
-            WHERE user_id = $2
-            RETURNING *;
+            SET products_id = array_append(products_id, $1)
+            WHERE user_id = $2 AND NOT (products_id @> ARRAY[$1]::uuid[]);
         `;
-        const result = await this.db.query(query, [productsId, userId]);
-        return result.rows[0];
+        await this.db.query(query, [productId, userId]);
     }
 
-    async deleteWishlist(userId: string): Promise<any> {
+    async removeProdut(userId: string, productId: string): Promise<void> {
         const query = `
-            DELETE FROM wishlists
+            UPDATE wishlists
+            SET products_id = array_remove(products_id, $1)
+            WHERE user_id = $2;
+        `;
+        await this.db.query(query, [productId, userId]);
+    }
+
+    async removeAllProdut(userId: string): Promise<void> {
+        const query = `
+            UPDATE wishlists
+            SET products_id = '{}'
             WHERE user_id = $1;
         `;
         await this.db.query(query, [userId]);
-        return { message: "Wishlist deleted successfully" };
     }
 }

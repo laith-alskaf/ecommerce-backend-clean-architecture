@@ -1,6 +1,6 @@
-import { MongoProductRepository } from '../../infrastructure/repositories/mongo/mongo-product.repository';
 import { ProductController } from '../controllers/product.controller';
 import { UuidGeneratorService } from '../../infrastructure/srevices/uuid-generator.service';
+import { ProductRepository } from '../../domain/repository/product.repository';
 
 import {
     GetProductByIdUseCase,
@@ -14,7 +14,7 @@ import {
 } from "../../application/use-cases/product";
 
 interface ProductDependenciesType {
-    productRepository: MongoProductRepository;
+    productRepository: ProductRepository;
     uuidGeneratorService: UuidGeneratorService
 }
 

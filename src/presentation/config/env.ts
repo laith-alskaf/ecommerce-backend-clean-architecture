@@ -13,7 +13,7 @@ export const CONFIG = {
 
 
     POSTGRES_USER: process.env.POSTGRES_USER,
-    POSTGRES_HOST: process.env.POSTGRES_HOST,
+    POSTGRES_HOST: process.env.POSTGRES_URL,
     POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
     POSTGRES_DATABASE: process.env.POSTGRES_DATABASE,
     POSTGRES_PORT: process.env.POSTGRES_PORT || 5432,

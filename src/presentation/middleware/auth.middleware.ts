@@ -59,7 +59,6 @@ export const authMiddleware = (tokenService: TokenService, userRepository: UserR
             };
             next();
         } catch (error) {
-            console.log('6666666666666666666666666666');
             throw new UnauthorizedError((error as any).message)
         }
     };

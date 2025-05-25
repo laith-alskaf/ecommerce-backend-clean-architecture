@@ -1,5 +1,5 @@
-import { MongoCategoryRepository } from '../../infrastructure/repositories/mongo/mongo-category.repository';
 import { CategoryController } from '../controllers/category.controller';
+import { CategoryRepository } from '../../domain/repository/category.repository';
 
 import {
     GetAllCategoriesUseCase,
@@ -14,7 +14,7 @@ import { UuidGeneratorService } from '../../infrastructure/srevices/uuid-generat
 
 interface CategoryDependenciesType {
     uuidGeneratorService: UuidGeneratorService
-    categoryRepository: MongoCategoryRepository;
+    categoryRepository: CategoryRepository;
 }
 
 export const CategoryDependencies = ({

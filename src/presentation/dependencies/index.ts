@@ -18,6 +18,11 @@ import { ProductDependencies } from './product.dependencies';
 import { CategoryDependencies } from './category.dependencies';
 import { WishlistDependencies } from './wishlist.dependencies';
 import { MongoWishlistRepository } from '../../infrastructure/repositories/mongo/mongo-wishlist.repository';
+import { PostgresUserRepository } from '../../infrastructure/repositories/postgre/postgre-user.repository';
+import { PostgresProductRepository } from '../../infrastructure/repositories/postgre/postgre-product.repository';
+import { PostgresCategoryRepository } from '../../infrastructure/repositories/postgre/category-postgre.repository';
+import { PostgresWishlistRepository } from '../../infrastructure/repositories/postgre/postgre-wishlist.repository';
+import { UserDependencies } from './user.depednencies';
 
 
 export const setupDependencies = () => {
@@ -27,6 +32,10 @@ export const setupDependencies = () => {
     const prodcutRepository = new MongoProductRepository();
     const categoryRepository = new MongoCategoryRepository();
     const wishlistRepository = new MongoWishlistRepository();
+    // const userRepository = new PostgresUserRepository();
+    // const prodcutRepository = new PostgresProductRepository();
+    // const categoryRepository = new PostgresCategoryRepository();
+    // const wishlistRepository = new PostgresWishlistRepository();
 
 
     // Services
@@ -60,9 +69,14 @@ export const setupDependencies = () => {
         categoryRepository: categoryRepository
     });
 
-      //3- Wishlist
+    //3- Wishlist
     const wishlistController = WishlistDependencies({
         wishlistRepository: wishlistRepository
+    });
+
+    //4- User
+    const userController = UserDependencies({
+        userRepository: userRepository,
     });
 
     return {
@@ -71,6 +85,7 @@ export const setupDependencies = () => {
         authController,
         productController,
         categoryController,
-        wishlistController
+        wishlistController,
+        userController
     };
 };

@@ -14,6 +14,7 @@ import wishlistRoutes from "./routes/wishlist.route";
 import publicCategoryRouters from "./routes/category.routes.ts/public-category.route";
 import { errorHandler, notFoundHandler } from "./middleware/error-handler.middleware";
 import { logger } from "./middleware/logger.middleware";
+import userRoutes from "./routes/user.routes";
 
 export default class Server {
     private app: Express;
@@ -32,6 +33,7 @@ export default class Server {
     private setupRoutes() {
         this.app.use(cors(corsOptions));
         this.app.use('/api/auth', authRoutes(this.container.authController));
+        this.app.use('/api/user', userRoutes(this.container.userController));
         this.app.use('/api/user/product', productRouters(this.container.productController));
         this.app.use('/api/product', publicProductRoutes(this.container.productController));
         this.app.use('/api/user/category', categoryRouters(this.container.categoryController));

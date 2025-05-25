@@ -1,29 +1,8 @@
-// src/validators/user.validator.ts
-import { changePasswordSchema, codeSchema, emailSchema, loginSchema, signupSchema } from './schemas/user.shema';
-import { createValidationMiddleware } from '../middleware/validation.middleware';
 
-export const validateSignup = createValidationMiddleware({
-  schema: signupSchema,
-  dataSource: 'body',
-});
+import { createValidationMiddleware } from "../middleware/validation.middleware";
+import { updateUserInfoShema } from "./schemas/user.shema";
 
-export const validateLogin = createValidationMiddleware({
-  schema: loginSchema,
-  dataSource: 'body',
-});
-
-
-export const validateForgotPass = createValidationMiddleware({
-  schema: emailSchema,
-  dataSource: 'body',
-});
-
-export const validateVerifyEmail = createValidationMiddleware({
-  schema: codeSchema,
-  dataSource: 'body',
-});
-
-export const validateChangePassword = createValidationMiddleware({
-  schema: changePasswordSchema,
-  dataSource: 'body',
+export const validateUpdateUserInfo = createValidationMiddleware({
+    schema: updateUserInfoShema,
+    dataSource: 'body',
 });
