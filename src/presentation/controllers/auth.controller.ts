@@ -43,6 +43,7 @@ export class AuthController {
     try {
       const loginData: LoginDTO = req.body;
       const { token, user } = await this.loginUseCase.execute(loginData);
+      
       new ApplicationResponse(res, {
         success: true,
         statusCode: StatusCodes.OK,
@@ -53,7 +54,7 @@ export class AuthController {
             id: user._id,
             userName: user.userName,
             email: user.email,
-            role: user.role
+            role: user.role,
           }
         }
       }).send();

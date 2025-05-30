@@ -1,6 +1,5 @@
 import mongoose, { Schema, Model, Document } from "mongoose";
 import { IProduct } from "../../../../domain/entity/product";
-import { CategoryModel } from "./category.model";
 
 type ProductDocument = IProduct & Document;
 

@@ -5,3 +5,5 @@ dist/
 uploads/
 docker-compose.yml
 DockerFile
+service-account.json
+firebase.env

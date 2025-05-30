@@ -23,6 +23,7 @@ import { PostgresProductRepository } from '../../infrastructure/repositories/pos
 import { PostgresCategoryRepository } from '../../infrastructure/repositories/postgre/category-postgre.repository';
 import { PostgresWishlistRepository } from '../../infrastructure/repositories/postgre/postgre-wishlist.repository';
 import { UserDependencies } from './user.depednencies';
+import { NewProductNotification } from '../../infrastructure/srevices/notif-new-product';
 
 
 export const setupDependencies = () => {
@@ -44,6 +45,7 @@ export const setupDependencies = () => {
     const otpStringGenerator = new OTPGeneratorService();
     const encryptionService = new BcryptPasswordHasher(CONFIG.SALT_ROUNDS_BCRYPT);
     const emailService = new NodemailerGmailService(CONFIG.GMAIL_USER!, CONFIG.GMAIL_PASS!);
+    const newProductNotification = new NewProductNotification();
 
     //Controllers
 
@@ -61,6 +63,7 @@ export const setupDependencies = () => {
     const productController = ProductDependencies({
         productRepository: prodcutRepository,
         uuidGeneratorService: uuidGeneratorService,
+        newProductNotification: newProductNotification
     });
 
     //3- Category

@@ -1,11 +1,12 @@
-import mongoose, { Schema, Model, Document } from "mongoose"; 
+import mongoose, { Schema, Model, Document } from "mongoose";
 import { IUser } from "../../../../domain/entity/user";
+import { object } from "joi";
 // import { v4 as uuidv4 } from "uuid";
 
 type UserDocument = IUser & Document;
 
 const userSchema = new Schema<UserDocument>({
-    _id: { type: String, default: () => crypto.randomUUID() },
+    _id: { type: String, default: () => crypto.randomUUID(), ref: 'Wishlist' },
     userName: {
         type: String,
         required: true,
