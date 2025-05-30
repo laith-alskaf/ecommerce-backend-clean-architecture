@@ -1,6 +1,6 @@
 # 🛍️ E-Commerce Backend with Wishlist - Clean Architecture
 
-A **scalable**, **secure**, and **maintainable** e-commerce backend built with **Node.js**, **TypeScript**, **Express**, **MongoDB**, and **PostgreSQL**, following **Clean Architecture** principles. This project powers a modern e-commerce platform with robust user authentication, role-based access control, product and category management, user wishlist, and user profile management. It includes comprehensive **Swagger documentation** and is designed for developers learning real-world backend development.
+A **scalable**, **secure**, and **maintainable** e-commerce backend built with **Node.js**, **TypeScript**, **Express**, **MongoDB**, and **PostgreSQL**, following **Clean Architecture** principles. This project powers a modern e-commerce platform with robust user authentication, role-based access control, product and category management, user wishlist, user profile management, and push notifications. It includes comprehensive **Swagger documentation** and is designed for developers learning real-world backend development.
 
 ## 🎯 Why This Project?
 
@@ -154,6 +154,7 @@ This is my **second training backend project**, actively developed to practice a
 - **Documentation**: Swagger (swagger-jsdoc, swagger-ui-express)
 - **Security**: CORS, dotenv
 - **Cloud Services**: Supabase (PostgreSQL)
+- **Notifications**: Firebase Cloud Messaging (FCM)
 
 ## 🚀 Quick Start
 
@@ -162,6 +163,7 @@ This is my **second training backend project**, actively developed to practice a
 - **Node.js**: v18 or higher
 - **MongoDB**: Local or MongoDB Atlas
 - **PostgreSQL**: Supabase account for managed PostgreSQL database
+- **Firebase**: Firebase project for push notifications
 - **npm**
 
 ### Setup Instructions
@@ -178,8 +180,26 @@ This is my **second training backend project**, actively developed to practice a
    - Create a Supabase account at [Supabase.io](https://supabase.com/).
    - Create a new project and obtain the PostgreSQL connection string (e.g., `postgresql://[user]:[password]@[host]:[port]/[db]`).
    - Update the `DATABASE_URL` in the `.env` file with the Supabase connection string.
+3. **Set up Firebase**:
+   - Create a Firebase project at [Firebase Console](https://console.firebase.google.com/).
+   - Generate a service account key under **Project Settings > Service Accounts**.
+   - Create `firebase.env` and add Firebase credentials to it (see below).
 
-3. **Create `.env` file**:
+   ```
+   FIREBASE_TYPE=service_account
+   FIREBASE_PROJECT_ID=
+   FIREBASE_PRIVATE_KEY_ID=
+   FIREBASE_PRIVATE_KEY=
+   FIREBASE_CLIENT_EMAIL=
+   FIREBASE_CLIENT_ID=
+   FIREBASE_AUTH_URI=
+   FIREBASE_TOKEN_URI=
+   FIREBASE_AUTH_PROVIDER_CERT_URL=
+   FIREBASE_CLIENT_CERT_URL=
+   FIREBASE_UNIVERSE_DOMAIN=
+   ```
+
+4. **Create `.env` file**:
    Copy `.env.example` to `.env` and update with your configuration:
 
    ```
@@ -227,6 +247,41 @@ Download the Postman collection for comprehensive testing:
 - [Postman Collection](https://drive.google.com/file/d/1qBzZ5rqvDApSoeo0YslUUBoDS_2W_dXR/view?usp=drive_link)
 - Includes auth flows, product CRUD, wishlist operations, user profile management, and role-based access tests.
 
+## 📢 Firebase Notifications Setup
+
+This project uses **Firebase Cloud Messaging (FCM)** to send push notifications to clients when a new product is added.
+
+### Backend Setup
+
+1. **Generate Service Account Key**:
+   - In [Firebase Console](https://console.firebase.google.com/), go to **Project Settings > Service Accounts**.
+   - Click **Generate new private key** and download the `service-account.json` file.
+   - **Important**: Do **not** commit `service-account.json` to GitHub. Add it to `.gitignore`:
+     ```
+     config/service-account.json
+     ```
+
+2. **Configure Environment Variables**:
+   - Add the following to your `.env` or `firebase.env` file (values from `service-account.json`):
+     ```
+     FIREBASE_TYPE=service_account
+     FIREBASE_PROJECT_ID=your-project-id
+     FIREBASE_PRIVATE_KEY_ID=your-private-key-id
+     FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+     FIREBASE_CLIENT_EMAIL=your-client-email
+     FIREBASE_CLIENT_ID=your-client-id
+     FIREBASE_AUTH_URI=https://accounts.google.com/o/oauth2/auth
+     FIREBASE_TOKEN_URI=https://oauth2.googleapis.com/token
+     FIREBASE_AUTH_PROVIDER_CERT_URL=https://www.googleapis.com/oauth2/v1/certs
+     FIREBASE_CLIENT_CERT_URL=https://www.googleapis.com/robot/v1/metadata/x509/your-client-email
+     FIREBASE_UNIVERSE_DOMAIN=googleapis.com
+     ```
+   - Ensure `src/presentation/config/firebase.ts` uses these variables for Firebase initialization.
+3. **Test Notifications**:
+   - Create a new product via `/api/user/product` using Postman.
+   - Check server logs for confirmation (e.g., "Notification sent successfully").
+   - Ensure clients are subscribed to the `new_product` topic.
+
 ## 🔐 Security Notes
 
 - **JWT Tokens**: Expire after 1 hour. Refresh by logging in again.
@@ -235,11 +290,13 @@ Download the Postman collection for comprehensive testing:
 - **Resource Ownership**: Middleware prevents unauthorized product modifications.
 - **CORS**: Configured for development; restrict origins in production.
 - **Supabase Security**: Supabase provides row-level security and SSL for PostgreSQL connections.
+- **Firebase Security**: Firebase credentials are stored in environment variables to prevent exposure.
 
 ## 📌 Project Status
 
 This is my **second training backend project**, actively maintained to practice real-world backend development. Recent updates include:
 
+- Integrated **Firebase Cloud Messaging** to send push
 - Integrated **PostgreSQL** via **Supabase** for scalable relational database management.
 - Added **user profile endpoints** (`/api/user/me`) for managing user information.
 - Continuously improving with new features, security enhancements, and performance optimizations.
