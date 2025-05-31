@@ -1,6 +1,6 @@
 
 import * as dotenv from 'dotenv';
-dotenv.config({ path: './firebase.env' });
+dotenv.config();
 console.log(process.env.FIREBASE_PROJECT_ID);
 
 export const serviceAccount: {} = {
