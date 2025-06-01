@@ -5,10 +5,9 @@ export class NewProductNotification implements NotificationService {
     async send(product: ProductInfoDTO): Promise<void> {
         console.log(JSON.stringify(product));
         const message = {
-            notification: {
+            data: { 
                 title: 'New Product Added!',
-                body: JSON.stringify(product),
-            },
+                body: JSON.stringify(product) },
             topic: 'new_product',
         };
 
